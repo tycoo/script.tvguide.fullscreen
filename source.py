@@ -287,6 +287,20 @@ class Database(object):
             [self._updateChannelAndProgramListCaches, callback, date, progress_callback, clearExistingProgramList])
         self.event.set()
 
+    def _updateChannelAndProgramListCaches1(self, date, progress_callback, clearExistingProgramList):
+        self.updateInProgress = True
+        d = xbmcgui.Dialog()
+        d.notification('TVGF','update started')
+
+        sql = xbmcvfs.File('special://profile/addon_data/script.tvguide.fullscreen/dump.sql','rb').read()
+        c = self.conn.cursor()
+        c.executescript(sql)
+
+        self.updateInProgress = False
+        self.updateFailed = False
+
+        d.notification('TVGF','update finished')
+
     def _updateChannelAndProgramListCaches(self, date, progress_callback, clearExistingProgramList):
         # todo workaround service.py 'forgets' the adapter and convert set in _initialize.. wtf?!
         sqlite3.register_adapter(datetime.datetime, self.adapt_datetime)
