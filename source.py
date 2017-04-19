@@ -452,6 +452,48 @@ class Database(object):
             c.close()
         xbmcvfs.delete(lock)
 
+        if ADDON.getSetting('sql.server.enabled') == 'true':
+            path = ADDON.getSetting('sql.server.folder') + ADDON.getSetting('sql.server.file')
+            tables = ["channels","programs"]
+            f = xbmcvfs.File(path,'wb')
+            f.write('BEGIN TRANSACTION;\n'.encode("utf8"))
+            cu = self.conn.cursor()
+            q = """
+                SELECT "name", "type", "sql"
+                FROM "sqlite_master"
+                    WHERE "sql" NOT NULL AND
+                    "type" == 'table'
+                    ORDER BY "name"
+                """
+            schema_res = cu.execute(q)
+            for table_name, type, sql in schema_res.fetchall():
+                if table_name in tables:
+                    sql = sql.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
+                    s = sql+';\n'
+                    #log(s)
+                    f.write(s.encode("utf8"))
+                    table_name_ident = table_name.replace('"', '""')
+                    #s = 'DELETE FROM %s;\n' % table_name_ident
+                    #f.write(s)
+                    res = cu.execute('PRAGMA table_info("{0}")'.format(table_name_ident))
+                    column_names = [str(table_info[1]) for table_info in res.fetchall()]
+                    q = """SELECT 'INSERT OR IGNORE INTO "{0}" VALUES({1})' FROM "{0}";""".format(
+                        table_name_ident,
+                        ",".join("""'||quote("{0}")||'""".format(col.replace('"', '""')) for col in column_names))
+                    query_res = cu.execute(q)
+                    for row in query_res:
+                        s = "%s;\n" % row[0]
+                        #log(s)
+                        f.write(s.encode("utf8"))
+
+            f.write('COMMIT;\n'.encode("utf8"))
+            f.close()
+            d = xbmcgui.Dialog()
+            d.notification("TVGF","finished writing")
+
+
+
+
     def updateProgramList(self, callback, programList, channel):
         self.eventQueue.append(
             [self._updateProgramList, callback, programList, channel])
