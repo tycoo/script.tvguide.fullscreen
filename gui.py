@@ -4209,8 +4209,12 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
 
         start = self.program.startDate
         end = self.program.endDate
-        nextstart = self.nextprogram.startDate
-        nextend = self.nextprogram.endDate
+        if self.nextprogram:
+            nextstart = self.nextprogram.startDate
+            nextend = self.nextprogram.endDate
+        else:
+            nextstart = None
+            nextend = None
 
         if nextstart and xbmc.getCondVisibility('Control.IsVisible(4107)'):
             day = self.formatDateTodayTomorrow(nextstart)

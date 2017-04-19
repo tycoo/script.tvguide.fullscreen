@@ -288,13 +288,9 @@ class Database(object):
         self.event.set()
 
     def _updateChannelAndProgramListCachesSQL(self, date, progress_callback, clearExistingProgramList):
-        if ADDON.getSetting('sql.type') == '0':
-            path = ADDON.getSetting('sql.file')
-        else:
-            path = ADDON.getSetting('sql.url')
 
-        sql = xbmcvfs.File(path,'rb').read()
         c = self.conn.cursor()
+
         c.execute('SELECT programs_updated FROM updates WHERE source=?', [self.source.KEY])
         row = c.fetchone()
         if row:
@@ -303,23 +299,59 @@ class Database(object):
             programsLastUpdated = datetime.datetime.fromtimestamp(0)
         dateStr = date.strftime('%Y-%m-%d')
 
-        updateTime = programsLastUpdated + datetime.timedelta(minutes=1)
+        minimumUpdateTime = programsLastUpdated + datetime.timedelta(minutes=1)
         now = datetime.datetime.now()
         #TODO lots of when to update logic
-        if now < updateTime:
+        if now < minimumUpdateTime:
             return
-
-        d = xbmcgui.Dialog()
-        d.notification('TVGF','update started')
+        #return
+        #c.execute("UPDATE sources SET channels_updated=? WHERE id=?", [datetime.datetime.now(), self.source.KEY])
+        #c.execute("DELETE FROM updates")
+        #c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
+        #          [self.source.KEY, dateStr, datetime.datetime.now()])
+        #self.conn.commit
 
         self.updateInProgress = True
         self.updateFailed = False
 
-        c.execute("DELETE FROM updates")
-        c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
-                  [self.source.KEY, dateStr, datetime.datetime.now()])
+
+        if ADDON.getSetting('sql.type') == '0':
+            path = ADDON.getSetting('sql.file')
+        else:
+            path = ADDON.getSetting('sql.url')
+
+        md5_new = xbmcvfs.File(path+'.md5','rb').read()[:32]
+        c.execute('SELECT md5 FROM sql')
+        row = c.fetchone()
+        if row:
+            md5_old = row['md5'][:32]
+        else:
+            md5_old = None
+
+        #log((md5_new,md5_old))
+        #log((md5_new.encode("utf8") == md5_old.encode("utf8")))
+
+        if ADDON.getSetting('xmltv.refresh') == 'false':
+            if md5_new and md5_old and (md5_new.encode("utf8") == md5_old.encode("utf8")):
+                self.conn.commit
+                self.updateInProgress = False
+                self.updateFailed = False
+                return
+
+
+        d = xbmcgui.Dialog()
+        d.notification('TVGF','update started')
+
+        sql = xbmcvfs.File(path,'rb').read()
         c.executescript(sql)
 
+
+
+        c.execute("DELETE FROM sql")
+        c.execute("INSERT OR REPLACE INTO sql(md5,updated) VALUES(?, ?)",
+                 [md5_new, datetime.datetime.now()])
+
+        self.conn.commit
         self.updateInProgress = False
         self.updateFailed = False
 
@@ -515,6 +547,15 @@ class Database(object):
 
             f.write('COMMIT;\n'.encode("utf8"))
             f.close()
+
+            import hashlib
+            md5 = hashlib.md5()
+            md5.update(xbmcvfs.File(path,"rb").read())
+            md5_hex = md5.hexdigest()
+            f = xbmcvfs.File(path+'.md5',"wb")
+            f.write(md5_hex)
+            f.close()
+
             d = xbmcgui.Dialog()
             d.notification("TVGF","finished writing")
 
@@ -527,6 +568,8 @@ class Database(object):
         self.event.set()
 
     def _updateProgramList(self, programList, channel):
+        if ADDON.getSetting('sql.enabled') == 'true':
+            return
         # todo workaround service.py 'forgets' the adapter and convert set in _initialize.. wtf?!
         sqlite3.register_adapter(datetime.datetime, self.adapt_datetime)
         sqlite3.register_converter('timestamp', self.convert_datetime)
@@ -904,7 +947,6 @@ class Database(object):
         c.execute('SELECT * FROM programs WHERE channel LIKE ? AND source=? AND start_date<=? AND end_date>=? ',
                   [search, self.source.KEY, now, now])
         for row in c:
-            log(row)
             program = Program(channelMap[row['channel']], title=row['title'], sub_title=row['sub_title'], startDate=row['start_date'], endDate=row['end_date'],
                           description=row['description'], categories=row['categories'],
                           imageLarge=row['image_large'], imageSmall=row['image_small'], season=row['season'], episode=row['episode'],
@@ -1226,7 +1268,6 @@ class Database(object):
         c.execute("SELECT * FROM alt_custom_stream_url")
         stream_urls = []
         for row in c:
-            log(row)
             stream_urls.append((row["channel"],row["title"],row["stream_url"]))
         return stream_urls
 
@@ -1400,6 +1441,9 @@ class Database(object):
                 c.execute('CREATE INDEX program_list_idx ON programs(source, channel, start_date, end_date)')
                 c.execute('CREATE INDEX start_date_idx ON programs(start_date)')
                 c.execute('CREATE INDEX end_date_idx ON programs(end_date)')
+            if version < [1, 4, 1]:
+                c.execute('UPDATE version SET major=1, minor=4, patch=1')
+                c.execute('CREATE TABLE sql(md5 TEXT PRIMARY KEY, updated TIMESTAMP)')
 
             # make sure we have a record in sources for this Source
             c.execute("INSERT OR IGNORE INTO sources(id, channels_updated) VALUES(?, ?)", [self.source.KEY, 0])
