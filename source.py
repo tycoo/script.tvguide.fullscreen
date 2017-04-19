@@ -568,8 +568,6 @@ class Database(object):
         self.event.set()
 
     def _updateProgramList(self, programList, channel):
-        if ADDON.getSetting('sql.enabled') == 'true':
-            return
         # todo workaround service.py 'forgets' the adapter and convert set in _initialize.. wtf?!
         sqlite3.register_adapter(datetime.datetime, self.adapt_datetime)
         sqlite3.register_converter('timestamp', self.convert_datetime)
