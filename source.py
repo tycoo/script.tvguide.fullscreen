@@ -287,13 +287,37 @@ class Database(object):
             [self._updateChannelAndProgramListCaches, callback, date, progress_callback, clearExistingProgramList])
         self.event.set()
 
-    def _updateChannelAndProgramListCaches1(self, date, progress_callback, clearExistingProgramList):
-        self.updateInProgress = True
+    def _updateChannelAndProgramListCachesSQL(self, date, progress_callback, clearExistingProgramList):
+        if ADDON.getSetting('sql.type') == '0':
+            path = ADDON.getSetting('sql.file')
+        else:
+            path = ADDON.getSetting('sql.url')
+
+        sql = xbmcvfs.File(path,'rb').read()
+        c = self.conn.cursor()
+        c.execute('SELECT programs_updated FROM updates WHERE source=?', [self.source.KEY])
+        row = c.fetchone()
+        if row:
+            programsLastUpdated = row['programs_updated']
+        else:
+            programsLastUpdated = datetime.datetime.fromtimestamp(0)
+        dateStr = date.strftime('%Y-%m-%d')
+
+        updateTime = programsLastUpdated + datetime.timedelta(minutes=1)
+        now = datetime.datetime.now()
+        #TODO lots of when to update logic
+        if now < updateTime:
+            return
+
         d = xbmcgui.Dialog()
         d.notification('TVGF','update started')
 
-        sql = xbmcvfs.File('special://profile/addon_data/script.tvguide.fullscreen/dump.sql','rb').read()
-        c = self.conn.cursor()
+        self.updateInProgress = True
+        self.updateFailed = False
+
+        c.execute("DELETE FROM updates")
+        c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
+                  [self.source.KEY, dateStr, datetime.datetime.now()])
         c.executescript(sql)
 
         self.updateInProgress = False
@@ -302,6 +326,9 @@ class Database(object):
         d.notification('TVGF','update finished')
 
     def _updateChannelAndProgramListCaches(self, date, progress_callback, clearExistingProgramList):
+        if ADDON.getSetting('sql.enabled') == 'true':
+            return self._updateChannelAndProgramListCachesSQL(date, progress_callback, clearExistingProgramList)
+
         # todo workaround service.py 'forgets' the adapter and convert set in _initialize.. wtf?!
         sqlite3.register_adapter(datetime.datetime, self.adapt_datetime)
         sqlite3.register_converter('timestamp', self.convert_datetime)
@@ -473,8 +500,8 @@ class Database(object):
                     #log(s)
                     f.write(s.encode("utf8"))
                     table_name_ident = table_name.replace('"', '""')
-                    #s = 'DELETE FROM %s;\n' % table_name_ident
-                    #f.write(s)
+                    s = 'DELETE FROM %s;\n' % table_name_ident
+                    f.write(s.encode("utf8"))
                     res = cu.execute('PRAGMA table_info("{0}")'.format(table_name_ident))
                     column_names = [str(table_info[1]) for table_info in res.fetchall()]
                     q = """SELECT 'INSERT OR IGNORE INTO "{0}" VALUES({1})' FROM "{0}";""".format(
