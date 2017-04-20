@@ -305,11 +305,7 @@ class Database(object):
         if now < minimumUpdateTime:
             return
         #return
-        #c.execute("UPDATE sources SET channels_updated=? WHERE id=?", [datetime.datetime.now(), self.source.KEY])
-        c.execute("DELETE FROM updates")
-        c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
-                  [self.source.KEY, dateStr, datetime.datetime.now()])
-        #self.conn.commit
+
 
         self.updateInProgress = True
         self.updateFailed = False
@@ -333,25 +329,29 @@ class Database(object):
 
         if ADDON.getSetting('xmltv.refresh') == 'false':
             if md5_new and md5_old and (md5_new.encode("utf8") == md5_old.encode("utf8")):
-                self.conn.commit
+                #self.conn.commit
                 self.updateInProgress = False
                 self.updateFailed = False
                 return
 
-
+        #c.execute("UPDATE sources SET channels_updated=? WHERE id=?", [datetime.datetime.now(), self.source.KEY])
+        c.execute("DELETE FROM updates")
+        c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
+                  [self.source.KEY, dateStr, datetime.datetime.now()])
+        #self.conn.commit
         d = xbmcgui.Dialog()
         d.notification('TVGF','update started')
-
-        sql = xbmcvfs.File(path,'rb').read()
-        c.executescript(sql)
-
-
-
         c.execute("DELETE FROM sql")
         c.execute("INSERT OR REPLACE INTO sql(md5,updated) VALUES(?, ?)",
                  [md5_new, datetime.datetime.now()])
 
         self.conn.commit
+        sql = xbmcvfs.File(path,'rb').read()
+        c.executescript(sql)
+
+
+
+
         self.updateInProgress = False
         self.updateFailed = False
 
