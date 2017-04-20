@@ -314,8 +314,9 @@ class Database(object):
 
         minimumUpdateTime = programsLastUpdated + datetime.timedelta(minutes=1)
         now = datetime.datetime.now()
+        #log((now,minimumUpdateTime,programsLastUpdated))
         #TODO lots of when to update logic
-        if now < minimumUpdateTime:
+        if minimumUpdateTime > now:
             return
         #return
 
@@ -365,11 +366,15 @@ class Database(object):
             path = ADDON.getSetting('sql.url')
             if ADDON.getSetting('gz') == 'true':
                 path = path+'.gz'
-                gz = StringIO.StringIO()
                 bin = self.get(path)
-                gz.write(bin)
-                gz.seek(0)
-                sql = gzip.GzipFile(fileobj=gz, mode='rb').read()
+                magic = bin[:3]
+                if magic == "\x1f\x8b\x08":
+                    gz = StringIO.StringIO()
+                    gz.write(bin)
+                    gz.seek(0)
+                    sql = gzip.GzipFile(fileobj=gz, mode='rb').read()
+                else:
+                    sql = bin
                 c.executescript(sql)
             else:
                 sql = self.get(path)
