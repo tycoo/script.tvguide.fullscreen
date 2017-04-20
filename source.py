@@ -32,7 +32,7 @@ from dateutil import tz
 import time
 from xml.etree import ElementTree
 import re
-
+import StringIO
 from strings import *
 #from guideTypes import *
 from fileFetcher import *
@@ -287,6 +287,19 @@ class Database(object):
             [self._updateChannelAndProgramListCaches, callback, date, progress_callback, clearExistingProgramList])
         self.event.set()
 
+    def get(self,url):
+        auth = None
+        if ADDON.getSetting('authentication') == 'true':
+            user = ADDON.getSetting('user')
+            password = ADDON.getSetting('password')
+            auth = (user, password)
+        r = requests.get(url,auth=auth, verify=False)
+        if r.status_code == requests.codes.ok:
+            return r.content
+        else:
+            return None
+
+
     def _updateChannelAndProgramListCachesSQL(self, date, progress_callback, clearExistingProgramList):
 
         c = self.conn.cursor()
@@ -310,12 +323,10 @@ class Database(object):
         self.updateInProgress = True
         self.updateFailed = False
 
-
         if ADDON.getSetting('sql.type') == '0':
             path = ADDON.getSetting('sql.file')
         else:
             path = ADDON.getSetting('sql.url')
-
         md5_new = xbmcvfs.File(path+'.md5','rb').read()[:32]
         c.execute('SELECT md5 FROM sql')
         row = c.fetchone()
@@ -346,11 +357,23 @@ class Database(object):
                  [md5_new, datetime.datetime.now()])
 
         self.conn.commit
-        sql = xbmcvfs.File(path,'rb').read()
-        c.executescript(sql)
 
-
-
+        if ADDON.getSetting('sql.type') == '0':
+            path = ADDON.getSetting('sql.file')
+            sql = xbmcvfs.File(path,'rb').read()
+        else:
+            path = ADDON.getSetting('sql.url')
+            if ADDON.getSetting('gz') == 'true':
+                path = path+'.gz'
+                gz = StringIO.StringIO()
+                bin = self.get(path)
+                gz.write(bin)
+                gz.seek(0)
+                sql = gzip.GzipFile(fileobj=gz, mode='rb').read()
+                c.executescript(sql)
+            else:
+                sql = self.get(path)
+                c.executescript(sql)
 
         self.updateInProgress = False
         self.updateFailed = False
