@@ -93,6 +93,7 @@ class Database(object):
         self.alreadyTriedUnlinking = False
         self.channelList = list()
         self.category = "Any"
+        self.sql_last_checked = datetime.datetime.fromtimestamp(0)
 
         profilePath = xbmc.translatePath(ADDON.getAddonInfo('profile'))
         if not os.path.exists(profilePath):
@@ -301,25 +302,15 @@ class Database(object):
 
 
     def _updateChannelAndProgramListCachesSQL(self, date, progress_callback, clearExistingProgramList):
-
-        c = self.conn.cursor()
-
-        c.execute('SELECT programs_updated FROM updates WHERE source=?', [self.source.KEY])
-        row = c.fetchone()
-        if row:
-            programsLastUpdated = row['programs_updated']
-        else:
-            programsLastUpdated = datetime.datetime.fromtimestamp(0)
-        dateStr = date.strftime('%Y-%m-%d')
-
-        minimumUpdateTime = programsLastUpdated + datetime.timedelta(minutes=1)
+        minimumUpdateTime = self.sql_last_checked + datetime.timedelta(days=1)
         now = datetime.datetime.now()
-        #log((now,minimumUpdateTime,programsLastUpdated))
         #TODO lots of when to update logic
         if minimumUpdateTime > now:
             return
         #return
+        self.sql_last_checked = now
 
+        c = self.conn.cursor()
 
         self.updateInProgress = True
         self.updateFailed = False
@@ -336,21 +327,13 @@ class Database(object):
         else:
             md5_old = None
 
-        #log((md5_new,md5_old))
-        #log((md5_new.encode("utf8") == md5_old.encode("utf8")))
-
         if ADDON.getSetting('xmltv.refresh') == 'false':
             if md5_new and md5_old and (md5_new.encode("utf8") == md5_old.encode("utf8")):
-                #self.conn.commit
+                c.close()
                 self.updateInProgress = False
                 self.updateFailed = False
                 return
 
-        #c.execute("UPDATE sources SET channels_updated=? WHERE id=?", [datetime.datetime.now(), self.source.KEY])
-        c.execute("DELETE FROM updates")
-        c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
-                  [self.source.KEY, dateStr, datetime.datetime.now()])
-        #self.conn.commit
         d = xbmcgui.Dialog()
         d.notification('TVGF','update started')
         c.execute("DELETE FROM sql")
@@ -380,6 +363,7 @@ class Database(object):
                 sql = self.get(path)
                 c.executescript(sql)
 
+        c.close()
         self.updateInProgress = False
         self.updateFailed = False
 
