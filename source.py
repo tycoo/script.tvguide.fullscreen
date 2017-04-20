@@ -306,9 +306,9 @@ class Database(object):
             return
         #return
         #c.execute("UPDATE sources SET channels_updated=? WHERE id=?", [datetime.datetime.now(), self.source.KEY])
-        #c.execute("DELETE FROM updates")
-        #c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
-        #          [self.source.KEY, dateStr, datetime.datetime.now()])
+        c.execute("DELETE FROM updates")
+        c.execute("INSERT INTO updates(source, date, programs_updated) VALUES(?, ?, ?)",
+                  [self.source.KEY, dateStr, datetime.datetime.now()])
         #self.conn.commit
 
         self.updateInProgress = True
