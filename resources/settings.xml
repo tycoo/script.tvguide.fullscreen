@@ -257,7 +257,6 @@
         <setting id="xmltv2.url" label="XMLTV Secondary Url" type="text" visible="eq(-3,true) + eq(-2,1)"  />
     </category>
     <category label="Lab4">
-        <setting id="sql.storage.type" label="SQL Storage Type" type="enum" enable="true"  default="0" values="sql|db" />
         <setting type="lsep" label="SQL Client"/>
         <setting id="sql.enabled" label="SQL Client" type="bool" default="false" />
         <setting id="sql.type" label="SQL Client Type" type="enum" enable="true" visible="eq(-1,true)" default="0" values="File|Url" />
@@ -267,6 +266,7 @@
         <setting id="sql.server.enabled" label="Create SQL Server File" type="bool" default="false" />
         <setting id="sql.server.folder" label="SQL Output Folder" type="folder" visible="eq(-1,true)" />
         <setting id="sql.server.file" label="SQL Output File Name" type="text" visible="eq(-2,true)"  default="tvgf.sql" />
+        <setting id="sql.storage.type" label="SQL Storage Type" type="enum" enable="true" visible="eq(-3,true)" default="0" values="sql|db" />        
     </category>
     <category label="Backup">
         <setting label="Clear Channel Mappings" type="action" action="RunScript($CWD/backup.py,5)" />

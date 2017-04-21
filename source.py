@@ -358,10 +358,9 @@ class Database(object):
                     sql = gzip.GzipFile(fileobj=gz, mode='rb').read()
                 else:
                     sql = bin
-                c.executescript(sql)
             else:
                 sql = self.get(path)
-                c.executescript(sql)
+            c.executescript(sql)
 
         c.close()
         self.updateInProgress = False
