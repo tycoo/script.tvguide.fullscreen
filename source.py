@@ -524,54 +524,83 @@ class Database(object):
         xbmcvfs.delete(lock)
 
         if ADDON.getSetting('sql.server.enabled') == 'true':
-            path = ADDON.getSetting('sql.server.folder') + ADDON.getSetting('sql.server.file')
-            tables = ["channels","programs"]
-            f = xbmcvfs.File(path,'wb')
-            f.write('BEGIN TRANSACTION;\n'.encode("utf8"))
-            cu = self.conn.cursor()
-            q = """
-                SELECT "name", "type", "sql"
-                FROM "sqlite_master"
-                    WHERE "sql" NOT NULL AND
-                    "type" == 'table'
-                    ORDER BY "name"
-                """
-            schema_res = cu.execute(q)
-            for table_name, type, sql in schema_res.fetchall():
-                if table_name in tables:
-                    sql = sql.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
-                    s = sql+';\n'
-                    #log(s)
-                    f.write(s.encode("utf8"))
-                    table_name_ident = table_name.replace('"', '""')
-                    s = 'DELETE FROM %s;\n' % table_name_ident
-                    f.write(s.encode("utf8"))
-                    res = cu.execute('PRAGMA table_info("{0}")'.format(table_name_ident))
-                    column_names = [str(table_info[1]) for table_info in res.fetchall()]
-                    q = """SELECT 'INSERT OR IGNORE INTO "{0}" VALUES({1})' FROM "{0}";""".format(
-                        table_name_ident,
-                        ",".join("""'||quote("{0}")||'""".format(col.replace('"', '""')) for col in column_names))
-                    query_res = cu.execute(q)
-                    for row in query_res:
-                        s = "%s;\n" % row[0]
+            if ADDON.getSetting('sql.storage.type') == '0':
+                path = ADDON.getSetting('sql.server.folder') + ADDON.getSetting('sql.server.file')
+                tables = ["channels","programs"]
+                f = xbmcvfs.File(path,'wb')
+                f.write('BEGIN TRANSACTION;\n'.encode("utf8"))
+                cu = self.conn.cursor()
+                q = """
+                    SELECT "name", "type", "sql"
+                    FROM "sqlite_master"
+                        WHERE "sql" NOT NULL AND
+                        "type" == 'table'
+                        ORDER BY "name"
+                    """
+                schema_res = cu.execute(q)
+                for table_name, type, sql in schema_res.fetchall():
+                    if table_name in tables:
+                        sql = sql.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
+                        s = sql+';\n'
                         #log(s)
                         f.write(s.encode("utf8"))
+                        table_name_ident = table_name.replace('"', '""')
+                        s = 'DELETE FROM %s;\n' % table_name_ident
+                        f.write(s.encode("utf8"))
+                        res = cu.execute('PRAGMA table_info("{0}")'.format(table_name_ident))
+                        column_names = [str(table_info[1]) for table_info in res.fetchall()]
+                        q = """SELECT 'INSERT OR IGNORE INTO "{0}" VALUES({1})' FROM "{0}";""".format(
+                            table_name_ident,
+                            ",".join("""'||quote("{0}")||'""".format(col.replace('"', '""')) for col in column_names))
+                        query_res = cu.execute(q)
+                        for row in query_res:
+                            s = "%s;\n" % row[0]
+                            #log(s)
+                            f.write(s.encode("utf8"))
 
-            f.write('COMMIT;\n'.encode("utf8"))
-            f.close()
+                f.write('COMMIT;\n'.encode("utf8"))
+                f.close()
 
-            import hashlib
-            md5 = hashlib.md5()
-            md5.update(xbmcvfs.File(path,"rb").read())
-            md5_hex = md5.hexdigest()
-            f = xbmcvfs.File(path+'.md5',"wb")
-            f.write(md5_hex)
-            f.close()
+                import hashlib
+                md5 = hashlib.md5()
+                md5.update(xbmcvfs.File(path,"rb").read())
+                md5_hex = md5.hexdigest()
+                f = xbmcvfs.File(path+'.md5',"wb")
+                f.write(md5_hex)
+                f.close()
 
-            d = xbmcgui.Dialog()
-            d.notification("TVGF","finished writing")
-
-
+                d = xbmcgui.Dialog()
+                d.notification("TVGF","finished writing")
+            else:
+                path = ADDON.getSetting('sql.server.folder') + ADDON.getSetting('sql.server.file')
+                xbmcvfs.delete(path)
+                tables = ["channels","programs"]
+                src_cursor = self.conn.cursor()
+                dst_conn = sqlite3.connect(path)
+                dst_conn.row_factory = sqlite3.Row
+                dst_cursor = dst_conn.cursor()
+                q = """
+                    SELECT "name", "type", "sql"
+                    FROM "sqlite_master"
+                        WHERE "sql" NOT NULL AND
+                        "type" == 'table'
+                        ORDER BY "name"
+                    """                
+                schema_res = src_cursor.execute(q)
+                for table_name, type, sql in schema_res.fetchall():
+                    if table_name in tables:
+                        dst_cursor.execute(sql)
+                        table_name_ident = table_name.replace('"', '""')
+                        res = src_cursor.execute('PRAGMA table_info("{0}")'.format(table_name_ident))
+                        column_names = [str(table_info[1]) for table_info in res.fetchall()]
+                        q = """SELECT 'INSERT OR IGNORE INTO "{0}" VALUES({1})' FROM "{0}";""".format(
+                            table_name_ident,
+                            ",".join("""'||quote("{0}")||'""".format(col.replace('"', '""')) for col in column_names))
+                        query_res = src_cursor.execute(q)
+                        for row in query_res:
+                            dst_cursor.execute(row[0])
+                        dst_conn.commit()
+                dst_conn.close()
 
 
     def updateProgramList(self, callback, programList, channel):
