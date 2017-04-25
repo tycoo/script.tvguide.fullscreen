@@ -1964,6 +1964,41 @@
             </control>
 
 
+<!--             # Help Marker Invisible Buttons - Main Control # -->
+            <control type="label" id="4323">
+                <description>visibility marker for invisible buttons help control</description>
+            </control>
+            <control type="button" id="4324">
+                <description>help marker toggle</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+                <visible>false</visible>
+            </control>
+            <control type="image">
+                <description>help info</description>
+                <posx>290</posx>
+                <posy>223</posy>
+                <width>640</width>
+                <height>60</height>
+                <texture>tvguide-glasspane.png</texture>
+                <visible>!Control.IsVisible(4300)+Control.IsVisible(4323)</visible>
+            </control>
+            <control type="label">
+                <description>help info</description>
+                <posx>290</posx>
+                <posy>223</posy>
+                <width>640</width>
+                <height>60</height>
+                <label>Invisible Buttons Help Marker -[CR]Info: Can be disabled in settings</label>
+                <font>font15</font>
+                <textcolor>white</textcolor>
+                <align>center</align>
+                <aligny>center</aligny>
+                <visible>!Control.IsVisible(4300)+Control.IsVisible(4323)</visible>
+            </control>
+
+
             <control type="label" id="4200">
                 <description>visibility marker for loading group</description>
             </control>
