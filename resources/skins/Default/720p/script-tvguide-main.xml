@@ -1840,6 +1840,127 @@
                     <visible>true</visible>
                     <!-- unused in default skin -->
                 </control>
+
+<!--                 # Invisible Buttons - Program Box # -->
+                <control type="group">
+                    <visible>![Control.IsVisible(4300)|Control.IsVisible(5000)]</visible>
+                    <control type="button" id="44302">
+                        <description>navigate left BIG</description>
+                        <posx>430</posx>
+                        <posy>0</posy>
+                        <width>278</width>
+                        <height>200</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>black</focusedcolor>
+                        <align>center</align>
+                        <aligny>top</aligny>
+                    </control>
+                    <control type="button" id="44301">
+                        <description>navigate to now BIG</description>
+                        <posx>710</posx>
+                        <posy>0</posy>
+                        <width>288</width>
+                        <height>200</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>black</focusedcolor>
+                        <align>center</align>
+                        <aligny>top</aligny>
+                    </control>
+                    <control type="button" id="44305">
+                        <description>navigate right BIG</description>
+                        <posx>1000</posx>
+                        <posy>0</posy>
+                        <width>280</width>
+                        <height>200</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>black</focusedcolor>
+                        <align>center</align>
+                        <aligny>top</aligny>
+                    </control>
+
+<!--                     # Help Marker Invisible Control Button Boxes - Program Box # -->
+                    <control type="group">
+                        <visible>Control.IsVisible(4323)+Control.IsVisible(4200)</visible>
+                        <control type="image">
+                            <description>navigate left BIG</description>
+                            <posx>430</posx>
+                            <posy>0</posy>
+                            <width>278</width>
+                            <height>200</height>
+                            <texture>tvguide-glasspane.png</texture>
+<!--                             <visible>Control.IsVisible(5200)</visible> -->
+                        </control>
+                        <control type="label">
+                            <description>navigate left BIG</description>
+                            <posx>430</posx>
+                            <posy>0</posy>
+                            <width>278</width>
+                            <height>200</height>
+                            <label>LEFT</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+<!--                            <visible>Control.IsVisible(5200)</visible> -->
+                        </control>
+                        <control type="image">
+                            <description>navigate to now BIG</description>
+                            <posx>710</posx>
+                            <posy>0</posy>
+                            <width>288</width>
+                            <height>200</height>
+                            <texture>tvguide-glasspane.png</texture>
+<!--                             <visible>Control.IsVisible(5200)</visible> -->
+                        </control>
+                        <control type="label">
+                            <description>navigate to now BIG</description>
+                            <posx>710</posx>
+                            <posy>0</posy>
+                            <width>288</width>
+                            <height>200</height>
+                            <label>NOW</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+<!--                          <visible>Control.IsVisible(5200)</visible> -->
+                        </control>
+                        <control type="image">
+                            <description>navigate right BIG</description>
+                            <posx>1000</posx>
+                            <posy>0</posy>
+                            <width>280</width>
+                            <height>200</height>
+                            <texture>tvguide-glasspane.png</texture>
+<!--                          <visible>Control.IsVisible(5200)</visible> -->
+                        </control>
+                        <control type="label">
+                            <description>navigate right BIG</description>
+                            <posx>1000</posx>
+                            <posy>0</posy>
+                            <width>280</width>
+                            <height>200</height>
+                            <label>RIGHT</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+<!--                           <visible>Control.IsVisible(5200)</visible> -->
+                        </control>
+                    </control>
+                </control>
             </control>
 
 
@@ -1987,51 +2108,6 @@
                     <font>font13</font>
                     <aligny>center</aligny>
                     <visible>false</visible>
-                </control>
-                <control type="button" id="44301">
-                    <description>navigate to now BIG</description>
-                    <posx>710</posx>
-                    <posy>480</posy>
-                    <width>288</width>
-                    <height>200</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
-                </control>
-                <control type="button" id="44302">
-                    <description>navigate left BIG</description>
-                    <posx>430</posx>
-                    <posy>480</posy>
-                    <width>278</width>
-                    <height>200</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
-                </control>
-                <control type="button" id="44305">
-                    <description>navigate right BIG</description>
-                    <posx>1000</posx>
-                    <posy>480</posy>
-                    <width>280</width>
-                    <height>200</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
                 </control>
 
                 <control type="button" id="4309">
