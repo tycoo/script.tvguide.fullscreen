@@ -1678,160 +1678,168 @@
                 </control>
             </control>
 
-            <control type="label" id="7028">
-                <description>Category name</description>
-                <posx>1260</posx>
-                <posy>480</posy>
-                <width>650</width>
-                <height>30</height>
-                <textcolor>grey</textcolor>
-                <font>font13</font>
-                <align>right</align>
-                <visible>false</visible>
-                <scroll>true</scroll>
-                <label>-</label>
-            </control>
-            <control type="label" id="7025">
-                <description>Channel name</description>
-                <posx>435</posx>
-                <posy>490</posy>
-                <width>650</width>
-                <height>30</height>
-                <textcolor>grey</textcolor>
-                <font>font13</font>
-                <align>left</align>
-                <visible>false</visible>
-                <scroll>true</scroll>
-                <label>-</label>
-            </control>
-            <control type="label" id="7020">
-                <description>Program title</description>
-                <posx>435</posx>
-                <posy>490</posy>
-                <width>600</width>
-                <height>30</height>
-                <textcolor>white</textcolor>
-
-                <font>font13</font>
-                <align>left</align>
-                <visible>true</visible>
-                <scroll>true</scroll>
-                <label>-</label>
-            </control>
-
-            <control type="label" id="7021">
-                <description>Program time</description>
-                <posx>1260</posx>
-                <posy>490</posy>
-                <width>1090</width>
-                <height>40</height>
-                <textcolor>white</textcolor>
-
-                <font>font13</font>
-                <align>right</align>
-
-                <visible>true</visible>
-            </control>
-            <control type="label" id="77021">
-                <description>Current Program time and day</description>
-                <left>960</left>
-                <posy>1</posy>
-                <width>300</width>
-                <height>38</height>
-                <textcolor>grey</textcolor>
-                <font>font13</font>
-                <align>right</align>
-                <aligny>center</aligny>
-                <label>Program Time</label>
-                <visible>false</visible>
-            </control>
-            <control type="label" id="7029">
-                <description>Current Program Duration</description>
-                <left>1060</left>
-                <posy>101</posy>
-                <width>200</width>
-                <height>40</height>
-                <align>right</align>
-                <aligny></aligny>
-                <textcolor>grey</textcolor>
-                <font>font13</font>
-                <label>Duration</label>
-                <visible>false</visible>
-            </control>
-            <control type="label" id="7030">
-                <description>Current Program Progress Info</description>
-                <left>1030</left>
-                <posy>134</posy>
-                <width>230</width>
-                <height>40</height>
-                <align>right</align>
-                <aligny></aligny>
-                <textcolor>grey</textcolor>
-                <font>font13</font>
-                <scroll>true</scroll>
-                <label fallback="[B]... minutes remaining[/B]"></label>
-                <visible>false</visible>
-            </control>
-            <control type="progress" id="7026">
-                <posx>427</posx>
-                <posy>478</posy>
-                <width>853</width>
-                <height>2</height>
-                <lefttexture />
-                <righttexture />
-                <texturebg  colordiffuse="">invisible.png</texturebg>
-                <midtexture colordiffuse="white">tvg-button-focus.png</midtexture>
-                <visible>IntegerGreaterThan(Control.GetLabel(7026),0)</visible>
-            </control>
-            <control type="textbox" id="7022">
-                <description>Program description</description>
-                <posx>435</posx>
-                <posy>520</posy>
-                <width>840</width>
-                <height>190</height>
-                <textcolor>white</textcolor>
-                <font>font13</font>
-                <align>left</align>
-                <wrapmultiline>true</wrapmultiline>
-                <label>-</label>
-                <autoscroll delay="5000" time="1000" repeat="10000"></autoscroll>
-            </control>
-
-            <control type="image" id="7023">
-                <description>Program logo / Source logo</description>
+<!--             # Program Box - Current Title/Description # -->
+            <control type="group">
                 <posx>0</posx>
-                <posy>480</posy>
-                <width>425</width>
+                <posy>240r</posy>
+                <width>1280</width>
                 <height>240</height>
-                <aligny>top</aligny>
-                <aspectratio>keep</aspectratio>
-                <fadetime>0</fadetime>
-                <texture>-</texture>
-                <visible>true</visible>
-            </control>
-            <control type="image" id="7027">
-                <description>Program logo / Source logo</description>
-                <posx>0</posx>
-                <posy>480</posy>
-                <width>425</width>
-                <height>240</height>
-                <aligny>top</aligny>
-                <aspectratio>scale</aspectratio>
-                <fadetime>0</fadetime>
-                <texture>-</texture>
-                <visible>true</visible>
-            </control>
-            <control type="image" id="7024">
-                <description>Channel logo</description>
-                <posx>0</posx>
-                <posy>43r</posy>
-                <width>176</width>
-                <height>43</height>
-                <aspectratio>keep</aspectratio>
-                <align>left</align>
-                <fadetime>0</fadetime>
-                <visible>true</visible>
-                <!-- unused in default skin -->
+                <visible>!Control.IsVisible(5000)</visible>
+                <control type="label" id="7028">
+                    <description>Category name</description>
+                    <posx>1260</posx>
+                    <posy>480</posy>
+                    <width>650</width>
+                    <height>30</height>
+                    <textcolor>grey</textcolor>
+                    <font>font13</font>
+                    <align>right</align>
+                    <visible>false</visible>
+                    <scroll>true</scroll>
+                    <label>-</label>
+                </control>
+                <control type="label" id="7025">
+                    <description>Channel name</description>
+                    <posx>435</posx>
+                    <posy>490</posy>
+                    <width>650</width>
+                    <height>30</height>
+                    <textcolor>grey</textcolor>
+                    <font>font13</font>
+                    <align>left</align>
+                    <visible>false</visible>
+                    <scroll>true</scroll>
+                    <label>-</label>
+                </control>
+                <control type="label" id="7020">
+                    <description>Program title</description>
+                    <posx>435</posx>
+                    <posy>490</posy>
+                    <width>600</width>
+                    <height>30</height>
+                    <textcolor>white</textcolor>
+
+                    <font>font13</font>
+                    <align>left</align>
+                    <visible>true</visible>
+                    <scroll>true</scroll>
+                    <label>-</label>
+                </control>
+
+                <control type="label" id="7021">
+                    <description>Program time</description>
+                    <posx>1260</posx>
+                    <posy>490</posy>
+                    <width>1090</width>
+                    <height>40</height>
+                    <textcolor>white</textcolor>
+
+                    <font>font13</font>
+                    <align>right</align>
+
+                    <visible>true</visible>
+                </control>
+                <control type="label" id="77021">
+                    <description>Current Program time and day</description>
+                    <left>960</left>
+                    <posy>1</posy>
+                    <width>300</width>
+                    <height>38</height>
+                    <textcolor>grey</textcolor>
+                    <font>font13</font>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <label>Program Time</label>
+                    <visible>false</visible>
+                </control>
+                <control type="label" id="7029">
+                    <description>Current Program Duration</description>
+                    <left>1060</left>
+                    <posy>101</posy>
+                    <width>200</width>
+                    <height>40</height>
+                    <align>right</align>
+                    <aligny></aligny>
+                    <textcolor>grey</textcolor>
+                    <font>font13</font>
+                    <label>Duration</label>
+                    <visible>false</visible>
+                </control>
+                <control type="label" id="7030">
+                    <description>Current Program Progress Info</description>
+                    <left>1030</left>
+                    <posy>134</posy>
+                    <width>230</width>
+                    <height>40</height>
+                    <align>right</align>
+                    <aligny></aligny>
+                    <textcolor>grey</textcolor>
+                    <font>font13</font>
+                    <scroll>true</scroll>
+                    <label fallback="[B]... minutes remaining[/B]"></label>
+                    <visible>false</visible>
+                </control>
+                <control type="progress" id="7026">
+                    <posx>427</posx>
+                    <posy>478</posy>
+                    <width>853</width>
+                    <height>2</height>
+                    <lefttexture />
+                    <righttexture />
+                    <texturebg  colordiffuse="">invisible.png</texturebg>
+                    <midtexture colordiffuse="white">tvg-button-focus.png</midtexture>
+                    <visible>IntegerGreaterThan(Control.GetLabel(7026),0)</visible>
+                </control>
+                <control type="textbox" id="7022">
+                    <description>Program description</description>
+                    <posx>435</posx>
+                    <posy>520</posy>
+                    <width>840</width>
+                    <height>190</height>
+                    <textcolor>white</textcolor>
+                    <font>font13</font>
+                    <align>left</align>
+                    <wrapmultiline>true</wrapmultiline>
+                    <label>-</label>
+                    <autoscroll delay="5000" time="1000" repeat="10000"></autoscroll>
+                </control>
+
+                <control type="image" id="7023">
+                    <description>Program logo / Source logo</description>
+                    <posx>0</posx>
+                    <posy>480</posy>
+                    <width>425</width>
+                    <height>240</height>
+                    <aligny>top</aligny>
+                    <aspectratio>keep</aspectratio>
+                    <fadetime>0</fadetime>
+                    <texture>-</texture>
+                    <visible>true</visible>
+                </control>
+                <control type="image" id="7027">
+                    <description>Program logo / Source logo</description>
+                    <posx>0</posx>
+                    <posy>480</posy>
+                    <width>425</width>
+                    <height>240</height>
+                    <aligny>top</aligny>
+                    <aspectratio>scale</aspectratio>
+                    <fadetime>0</fadetime>
+                    <texture>-</texture>
+                    <visible>true</visible>
+                </control>
+                <control type="image" id="7024">
+                    <description>Channel logo</description>
+                    <posx>0</posx>
+                    <posy>43r</posy>
+                    <width>176</width>
+                    <height>43</height>
+                    <aspectratio>keep</aspectratio>
+                    <align>left</align>
+                    <fadetime>0</fadetime>
+                    <visible>true</visible>
+                    <!-- unused in default skin -->
+                </control>
             </control>
 
 
