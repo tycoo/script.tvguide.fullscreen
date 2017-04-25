@@ -1688,7 +1688,7 @@
                 <control type="label" id="7028">
                     <description>Category name</description>
                     <posx>1260</posx>
-                    <posy>480</posy>
+                    <posy>0</posy>
                     <width>650</width>
                     <height>30</height>
                     <textcolor>grey</textcolor>
@@ -1701,7 +1701,7 @@
                 <control type="label" id="7025">
                     <description>Channel name</description>
                     <posx>435</posx>
-                    <posy>490</posy>
+                    <posy>10</posy>
                     <width>650</width>
                     <height>30</height>
                     <textcolor>grey</textcolor>
@@ -1714,7 +1714,7 @@
                 <control type="label" id="7020">
                     <description>Program title</description>
                     <posx>435</posx>
-                    <posy>490</posy>
+                    <posy>10</posy>
                     <width>600</width>
                     <height>30</height>
                     <textcolor>white</textcolor>
@@ -1729,7 +1729,7 @@
                 <control type="label" id="7021">
                     <description>Program time</description>
                     <posx>1260</posx>
-                    <posy>490</posy>
+                    <posy>10</posy>
                     <width>1090</width>
                     <height>40</height>
                     <textcolor>white</textcolor>
@@ -1781,7 +1781,7 @@
                 </control>
                 <control type="progress" id="7026">
                     <posx>427</posx>
-                    <posy>478</posy>
+                    <posy>-2</posy>
                     <width>853</width>
                     <height>2</height>
                     <lefttexture />
@@ -1793,7 +1793,7 @@
                 <control type="textbox" id="7022">
                     <description>Program description</description>
                     <posx>435</posx>
-                    <posy>520</posy>
+                    <posy>40</posy>
                     <width>840</width>
                     <height>190</height>
                     <textcolor>white</textcolor>
@@ -1807,7 +1807,7 @@
                 <control type="image" id="7023">
                     <description>Program logo / Source logo</description>
                     <posx>0</posx>
-                    <posy>480</posy>
+                    <posy>0</posy>
                     <width>425</width>
                     <height>240</height>
                     <aligny>top</aligny>
@@ -1819,7 +1819,7 @@
                 <control type="image" id="7027">
                     <description>Program logo / Source logo</description>
                     <posx>0</posx>
-                    <posy>480</posy>
+                    <posy>0</posy>
                     <width>425</width>
                     <height>240</height>
                     <aligny>top</aligny>
@@ -1831,7 +1831,7 @@
                 <control type="image" id="7024">
                     <description>Channel logo</description>
                     <posx>0</posx>
-                    <posy>43r</posy>
+                    <posy>197</posy>
                     <width>176</width>
                     <height>43</height>
                     <aspectratio>keep</aspectratio>
