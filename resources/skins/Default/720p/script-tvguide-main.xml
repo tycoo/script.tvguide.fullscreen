@@ -1596,6 +1596,86 @@
                     <aligny>top</aligny>
                     <visible>true</visible>
                 </control>
+
+<!--                 # Invisible Buttons - Channels Column # -->
+                <control type="group">
+                    <visible>![Control.IsVisible(4300)|Control.IsVisible(5000)]</visible>
+                    <control type="button" id="44303">
+                        <description>navigate up BIG</description>
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>180</width>
+                        <height>208</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>white</focusedcolor>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                    </control>
+                    <control type="button" id="44304">
+                        <description>navigate down BIG</description>
+                        <posx>0</posx>
+                        <posy>210</posy>
+                        <width>180</width>
+                        <height>240</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>black</focusedcolor>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                    </control>
+
+<!--                     # Help Marker Invisible Buttons - Channels Column # -->
+                    <control type="group">
+                        <visible>Control.IsVisible(4323)</visible>
+                        <control type="image">
+                            <description>navigate up BIG</description>
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>180</width>
+                            <height>208</height>
+                            <texture>tvguide-glasspane.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>navigate up BIG</description>
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>180</width>
+                            <height>208</height>
+                            <label>CHANNEL UP</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="image">
+                            <description>navigate down BIG</description>
+                            <posx>0</posx>
+                            <posy>210</posy>
+                            <width>180</width>
+                            <height>240</height>
+                            <texture>tvguide-glasspane.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>navigate down BIG</description>
+                            <posx>0</posx>
+                            <posy>210</posy>
+                            <width>180</width>
+                            <height>240</height>
+                            <label>CHANNEL DOWN</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                        </control>
+                    </control>
+                </control>
             </control>
 
             <control type="label" id="7028">
@@ -1921,36 +2001,6 @@
                     <posy>480</posy>
                     <width>278</width>
                     <height>200</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
-                </control>
-                <control type="button" id="44303">
-                    <description>navigate up BIG</description>
-                    <posx>0</posx>
-                    <posy>30</posy>
-                    <width>180</width>
-                    <height>208</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
-                </control>
-                <control type="button" id="44304">
-                    <description>navigate down BIG</description>
-                    <posx>0</posx>
-                    <posy>240</posy>
-                    <width>180</width>
-                    <height>240</height>
                     <label></label>
                     <font>font13</font>
                     <aligny>center</aligny>
