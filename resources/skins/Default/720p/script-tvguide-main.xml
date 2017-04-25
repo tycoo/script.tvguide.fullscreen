@@ -2427,6 +2427,26 @@
         </control>
 
 
+<!--         # MenuBar # -->
+        <control type="label" id="5200">
+            <description>visibility marker for MenuBar</description>
+        </control>
+        <control type="button" id="5201">
+            <description>Show MenuBar Button</description>
+            <texturefocus></texturefocus>
+            <texturenofocus></texturenofocus>
+            <label></label>
+            <visible>false</visible>
+        </control>
+        <control type="button" id="55202">
+            <description>Close MenuBar Button</description>
+            <texturefocus></texturefocus>
+            <texturenofocus></texturenofocus>
+            <label></label>
+            <visible>!Control.IsVisible(5200)</visible>
+            <visible>false</visible>
+        </control>
+
 
         <control type="label" id="6000">
             <description>visibility marker for OSD Info bar</description>
