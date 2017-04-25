@@ -2766,6 +2766,29 @@
                     <onclick>info</onclick>
                     <onclick>left</onclick>
                 </control>
+
+                <control type="button" id="6303">
+                    <description>OSD button play</description>
+                    <texturefocus></texturefocus>
+                    <texturenofocus></texturenofocus>
+                    <label></label>
+                    <visible>false</visible>
+                </control>
+                <control type="button" id="6304">
+                    <description>OSD button contextmenu current program</description>
+                    <texturefocus></texturefocus>
+                    <texturenofocus></texturenofocus>
+                    <label></label>
+                    <visible>false</visible>
+                </control>
+                <control type="button" id="6305">
+                    <description>OSD button contextmenu next program</description>
+                    <texturefocus></texturefocus>
+                    <texturenofocus></texturenofocus>
+                    <label></label>
+                    <visible>false</visible>
+                </control>
+
             </control>
 
             <!-- Program description -->
@@ -2792,6 +2815,13 @@
                 <align>right</align>
 
             </control>
+
+            <control type="label" id="60021">
+                <description>OSD Program start time</description>
+                <label></label>
+                <visible>false</visible>
+            </control>
+
             <control type="image" id="6004">
                 <description>Program channel logo</description>
                 <posx>5</posx>
@@ -2850,6 +2880,17 @@
                 <visible>false</visible>
             </control>
 
+            <control type="label" id="6013">
+                <description>OSD Current Program Duration</description>
+                <label></label>
+                <visible>false</visible> 
+            </control>
+            <control type="label" id="6014">
+                <description>OSD Current Program Progress Info</description>
+                <label></label>
+                <visible>false</visible>
+            </control>
+
             <control type="textbox" id="6007">
                 <description>Next Program description</description>
                 <posx>1045</posx>
@@ -2888,6 +2929,12 @@
                 <font>font12</font>
                 <align>left</align>
                 <aligny>top</aligny>
+                <visible>false</visible>
+            </control>
+
+            <control type="label" id="60091">
+                <description>OSD Next Program start time</description>
+                <label></label>
                 <visible>false</visible>
             </control>
 
