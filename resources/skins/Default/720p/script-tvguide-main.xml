@@ -208,6 +208,157 @@
             <visible>true</visible>
         </control>
 
+<!--         # Invisible Buttons - Video Window # -->
+        <control type="group">
+                <visible>Control.IsVisible(5000)+Control.IsVisible(6000)+Control.IsVisible(10000)+Control.IsVisible(8000)+!Control.IsVisible(4300)</visible>
+            <control type="button" id="5004">
+                <description>last played</description>
+                <posx>0</posx>
+                <posy>120</posy>
+                <width>340</width>
+                <height>320</height>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+                <visible>false</visible>
+            </control>
+            <control type="button">
+                <description>now</description>
+                <posx>340</posx>
+                <posy>120</posy>
+                <width>600</width>
+                <height>320</height>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+                <onclick>up</onclick>
+                <visible>false</visible>
+            </control>
+            <control type="button">
+                <description>quick epg</description>
+                <posx>0</posx>
+                <posy>80r</posy>
+                <width>1280</width>
+                <height>80</height>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+                <onclick>down</onclick>
+                <visible>false</visible>
+            </control>
+
+<!--             # Help Marker Invisible Buttons - Video Window # -->
+            <control type="group">
+                <visible>!Control.IsVisible(7000)+Control.IsVisible(4323)</visible>
+                <control type="image">
+                    <description>back</description>
+                    <posx>100r</posx>
+                    <posy>0</posy>
+                    <width>100</width>
+                    <height>100</height>
+                    <texture>tvguide-glasspane.png</texture>
+                </control>
+                <control type="label">
+                    <description>back</description>
+                    <posx>100r</posx>
+                    <posy>0</posy>
+                    <width>100</width>
+                    <height>100</height>
+                    <label>EPG BACK</label>
+                    <font>font15</font>
+                    <textcolor>white</textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                </control>
+                <control type="image">
+                    <description>info osd</description>
+                    <posx>0</posx>
+                    <posy>200r</posy>
+                    <width>1280</width>
+                    <height>200</height>
+                    <texture>tvguide-glasspane.png</texture>
+                </control>
+                <control type="label">
+                    <description>info osd</description>
+                    <posx>0</posx>
+                    <posy>200r</posy>
+                    <width>1280</width>
+                    <height>200</height>
+                    <label>OSD</label>
+                    <font>font15</font>
+                    <textcolor>white</textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                </control>
+                <control type="image">
+                    <description>last played</description>
+                    <posx>0</posx>
+                    <posy>120</posy>
+                    <width>340</width>
+                    <height>320</height>
+                    <texture>tvguide-glasspane.png</texture>
+                    <visible>false</visible>
+                </control>
+                <control type="label">
+                    <description>last played</description>
+                    <posx>0</posx>
+                    <posy>120</posy>
+                    <width>340</width>
+                    <height>320</height>
+                    <label>LAST PLAYED</label>
+                    <font>font15</font>
+                    <textcolor>white</textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <visible>false</visible>
+                </control>
+                <control type="image">
+                    <description>now</description>
+                    <posx>341</posx>
+                    <posy>120</posy>
+                    <width>598</width>
+                    <height>320</height>
+                    <texture>tvguide-glasspane.png</texture>
+                    <visible>false</visible>
+                </control>
+                <control type="label">
+                    <description>now</description>
+                    <posx>340</posx>
+                    <posy>120</posy>
+                    <width>600</width>
+                    <height>320</height>
+                    <label>NOW</label>
+                    <font>font15</font>
+                    <textcolor>white</textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <visible>false</visible>
+                </control>
+                <control type="image">
+                    <description>quick epg</description>
+                    <posx>0</posx>
+                    <posy>80r</posy>
+                    <width>1280</width>
+                    <height>80</height>
+                    <texture>tvguide-glasspane.png</texture>
+                    <visible>false</visible>
+                </control>
+                <control type="label">
+                    <description>quick epg</description>
+                    <posx>0</posx>
+                    <posy>80r</posy>
+                    <width>1280</width>
+                    <height>80</height>
+                    <label>QUICK EPG</label>
+                    <font>font15</font>
+                    <textcolor>white</textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <visible>false</visible>
+                </control>
+            </control>
+        </control>
+
         <control type="label" id="5000">
             <description>visibility marker for TV Guide group</description>
         </control>
