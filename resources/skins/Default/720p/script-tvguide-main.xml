@@ -2512,6 +2512,148 @@
                 <height>720</height>
                 <visible>!Control.IsVisible(6300)</visible>
 
+<!--                 # Invisible Buttons - OSD # -->
+                <control type="group">
+                    <control type="button" id="6301">
+                        <description>last played</description>
+                        <posx>0</posx>
+                        <posy>-470</posy>
+                        <width>340</width>
+                        <height>320</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <visible>false</visible>
+                    </control>
+                    <control type="button">
+                        <description>now</description>
+                        <posx>340</posx>
+                        <posy>-470</posy>
+                        <width>600</width>
+                        <height>320</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <onclick>info</onclick>
+                        <onclick>up</onclick>
+                        <visible>false</visible>
+                    </control>
+                    <control type="button" id ="6302">
+                        <description>Epg</description>
+                        <posx>340r</posx>
+                        <posy>-470</posy>
+                        <width>340</width>
+                        <height>320</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <visible>false</visible>
+                    </control>
+                    <control type="button">
+                        <description>Close Osd Info</description>
+                        <posx>0</posx>
+                        <posy>-150</posy>
+                        <width>1280</width>
+                        <height>150</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <onclick>info</onclick>
+                    </control>
+
+<!--                     # Help Marker Invisible Buttons - OSD # -->
+                    <control type="group">
+                        <description>Buttons Help Video Window</description>
+                        <visible>Control.IsVisible(4323)</visible>
+                        <control type="image">
+                            <description>last played</description>
+                            <posx>0</posx>
+                            <posy>-470</posy>
+                            <width>339</width>
+                            <height>320</height>
+                            <texture>tvguide-glasspane.png</texture>
+                            <visible>!StringCompare(Control.GetLabel(6301),)</visible>
+                        </control>
+                        <control type="label">
+                            <description>last played</description>
+                            <posx>0</posx>
+                            <posy>-470</posy>
+                            <width>339</width>
+                            <height>320</height>
+                            <label>LAST PLAYED</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <visible>!StringCompare(Control.GetLabel(6301),)</visible>
+                        </control>
+                        <control type="image">
+                            <description>now</description>
+                            <posx>340</posx>
+                            <posy>-470</posy>
+                            <width>599</width>
+                            <height>320</height>
+                            <texture>tvguide-glasspane.png</texture>
+                            <visible>false</visible>
+                        </control>
+                        <control type="label">
+                            <description>now</description>
+                            <posx>340</posx>
+                            <posy>-470</posy>
+                            <width>599</width>
+                            <height>320</height>
+                            <label>NOW</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <visible>false</visible>
+                        </control>
+                        <control type="image">
+                            <description>epg</description>
+                            <posx>340r</posx>
+                            <posy>-470</posy>
+                            <width>339</width>
+                            <height>320</height>
+                            <texture>tvguide-glasspane.png</texture>
+                            <visible>!StringCompare(Control.GetLabel(6302),)</visible>
+                        </control>
+                        <control type="label">
+                            <description>epg</description>
+                            <posx>340r</posx>
+                            <posy>-470</posy>
+                            <width>339</width>
+                            <height>320</height>
+                            <label>EPG BACK</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <visible>!StringCompare(Control.GetLabel(6302),)</visible>
+                        </control>
+                        <control type="image">
+                            <description>close osd</description>
+                            <posx>0</posx>
+                            <posy>-149</posy>
+                            <width>1280</width>
+                            <height>148</height>
+                            <texture>tvguide-glasspane.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>close osd</description>
+                            <posx>0</posx>
+                            <posy>-149</posy>
+                            <width>1280</width>
+                            <height>148</height>
+                            <label>CLOSE OSD</label>
+                            <font>font15</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                        </control>
+                    </control>
+                </control>
+
                   <control type="button">
                     <description>Right</description>
                     <posx>1250</posx>
