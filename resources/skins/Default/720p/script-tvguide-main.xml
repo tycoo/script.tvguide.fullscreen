@@ -679,6 +679,120 @@
                     <animation effect="slide" start="0,0" end="-40,0" time="75" condition="Window.IsVisible(Mutebug)">conditional</animation>
                 </control>
 
+<!--                 # Invisible Buttons - Date and time row # -->
+                <control type="group">
+                    <visible>![Control.IsVisible(4300)|Control.IsVisible(5000)]</visible>
+                    <control type="button" id="4313">
+                        <description>first channel</description>
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>180</width>
+                        <height>30</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>black</focusedcolor>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                    </control>
+                    <control type="button" id="4318">
+                        <description>next day</description>
+                        <posx>100r</posx>
+                        <posy>0</posy>
+                        <width>100</width>
+                        <height>30</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>black</focusedcolor>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                    </control>
+                    <control type="button" id="4319">
+                        <description>prev day</description>
+                        <posx>200r</posx>
+                        <posy>0</posy>
+                        <width>100</width>
+                        <height>30</height>
+                        <texturefocus></texturefocus>
+                        <texturenofocus></texturenofocus>
+                        <label></label>
+                        <font>font13</font>
+                        <textcolor>grey</textcolor>
+                        <focusedcolor>black</focusedcolor>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                    </control>
+
+<!--                     # Help Marker Invisible Buttons - Date and time row # -->
+                    <control type="group">
+                        <visible>Control.IsVisible(4323)</visible>
+                        <control type="image">
+                            <description>first channel</description>
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>180</width>
+                            <height>30</height>
+                            <texture>tvguide-glasspane.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>first channel</description>
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>180</width>
+                            <height>30</height>
+                            <label>FIRST CHANNEL</label>
+                            <font>font13</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="image">
+                            <description>next day</description>
+                            <posx>100r</posx>
+                            <posy>0</posy>
+                            <width>100</width>
+                            <height>30</height>
+                            <texture>tvguide-glasspane.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>next day</description>
+                            <posx>100r</posx>
+                            <posy>0</posy>
+                            <width>100</width>
+                            <height>30</height>
+                            <label>NEXT DAY</label>
+                            <font>font13</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                        </control> 
+                        <control type="image">
+                            <description>previous day</description>
+                            <posx>200r</posx>
+                            <posy>0</posy>
+                            <width>100</width>
+                            <height>30</height>
+                            <texture>tvguide-glasspane.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>previous day</description>
+                            <posx>200r</posx>
+                            <posy>0</posy>
+                            <width>100</width>
+                            <height>30</height>
+                            <label>PREVIOUS DAY</label>
+                            <font>font13</font>
+                            <textcolor>white</textcolor>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                        </control>
+                    </control>
+                </control>
             </control>
 
             <!-- Channels column -->
@@ -1807,51 +1921,6 @@
                     <posy>480</posy>
                     <width>278</width>
                     <height>200</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
-                </control>
-                <control type="button" id="4313">
-                    <description>first channel</description>
-                    <posx>0</posx>
-                    <posy>0</posy>
-                    <width>180</width>
-                    <height>30</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
-                </control>
-                <control type="button" id="4318">
-                    <description>next day</description>
-                    <posx>100r</posx>
-                    <posy>0</posy>
-                    <width>100</width>
-                    <height>30</height>
-                    <label></label>
-                    <font>font13</font>
-                    <aligny>center</aligny>
-                    <align>center</align>
-                    <textcolor>grey</textcolor>
-                    <focusedcolor>black</focusedcolor>
-                    <texturefocus></texturefocus>
-                    <texturenofocus></texturenofocus>
-                </control>
-                <control type="button" id="4319">
-                    <description>prev day</description>
-                    <posx>200r</posx>
-                    <posy>0</posy>
-                    <width>100</width>
-                    <height>30</height>
                     <label></label>
                     <font>font13</font>
                     <aligny>center</aligny>
