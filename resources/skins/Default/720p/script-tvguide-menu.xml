@@ -234,6 +234,12 @@
             <label></label>
         </control>
 
+        <control type="label" id="77003">
+            <description>program date and endtime</description>
+            <label></label>
+            <visible>false</visible>
+        </control>
+
         <control type="label" id="7000">
             <description>program description</description>
             <posx>550</posx>
@@ -247,6 +253,40 @@
             <wrapmultiline>true</wrapmultiline>
             <autoscroll time="3600" delay="6000" repeat="6000">true</autoscroll>
             <label/>
+        </control>
+
+        <control type="textbox" id="77000">
+            <description>Program description</description>
+            <label></label>
+            <wrapmultiline>true</wrapmultiline>
+            <autoscroll time="3600" delay="20000" repeat="6000">true</autoscroll>
+            <visible>false</visible>
+        </control>
+        <control type="label" id="4103">
+            <description>Program Duration</description>
+            <label></label>
+            <visible>false</visible>
+        </control>
+        <control type="label" id="4104">
+            <description>Program Progress Info</description>
+            <label></label>
+            <visible>false</visible>
+        </control>
+        <control type="progress" id="4105">
+            <description>Progress Bar</description>
+            <lefttexture colordiffuse=""></lefttexture>
+            <righttexture colordiffuse=""></righttexture>
+            <texturebg colordiffuse=""></texturebg>
+            <midtexture colordiffuse=""></midtexture>
+            <visible>IntegerGreaterThan(Control.GetLabel(4105),0)</visible>
+            <visible>false</visible>
+        </control>
+        <control type="image">
+            <description>Current Program Progress Bar Background</description>
+            <texture colordiffuse=""></texture>
+            <aspectratio>stretch</aspectratio>
+            <visible>!Control.IsVisible(4105)</visible>
+            <visible>false</visible>
         </control>
 
         <control type="label" id="4101">
@@ -276,6 +316,17 @@
             <aligny>bottom</aligny>
             <aspectratio>keep</aspectratio>
             <visible>true</visible>
+        </control>
+
+        <control type="label" id="4106">
+            <description>next program title</description>
+            <label></label>
+            <visible>false</visible>
+        </control>
+        <control type="label" id="4107">
+            <description>next program date</description>
+            <label></label>
+            <visible>false</visible>
         </control>
 
         <control type="button" id="4015">
@@ -706,6 +757,162 @@
             <label></label>
             <align>left</align>
             <scroll>true</scroll>
+        </control>
+
+
+<!--         ## New Controls ## -->
+        <control type="button" id="44000">
+            <description>Stop button</description>
+            <texturefocus></texturefocus>
+            <texturenofocus></texturenofocus>
+            <label></label>
+            <visible>Player.HasVideo</visible>
+            <visible>false</visible>
+        </control>
+
+<!--         # Mouse Control # -->
+        <control type="label" id="44500">
+            <description>visibility marker for PopupMenu Mouse Control Group</description>
+        </control>
+        <control type="group">
+            <description>Buttons</description>
+            <visible>!Control.IsVisible(44500)</visible>
+            <visible>false</visible>
+            <control type="button" id="44501">
+                <description>play BIG</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="44503">
+                <description>Channel up BIG</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="44504">
+                <description>Channel down BIG</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="44505">
+                <description>Program previous BIG</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="44506">
+                <description>Program next BIG</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="44507">
+                <description>Program now BIG</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+
+<!--             # Help Marker Invisible Buttons - PopupMenu # -->
+            <control type="label" id="44510">
+                <description> visibility marker for PopupMenu help control / invisible buttons help</description>
+            </control>
+            <control type="group">
+                <description>Help Marker Invisible Buttons</description>
+                <visible>!Control.IsVisible(44510)</visible>
+                <control type="image">
+                    <description></description>
+                    <texture>tvguide-glasspane.png</texture>
+                </control>
+                <control type="label">
+                    <description></description>
+                    <label></label>
+                    <font></font>
+                    <textcolor></textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                </control>
+
+            </control>
+        </control>
+
+
+<!--         # PopupSetup # -->
+        <control type="button" id="4501">
+            <description>Show PopupSetup</description>
+            <texturefocus></texturefocus>
+            <texturenofocus></texturenofocus>
+            <label></label>
+            <visible>false</visible>
+        </control>
+
+        <control type="label" id="4500">
+            <description>visibility marker for PopupSetup</description>
+        </control>
+        <control type="group">
+            <description>Popup Setup</description>
+            <visible>!Control.IsVisible(4500)</visible>
+            <control type="label" id="44101">
+                <description>PopupSetup channel title</description>
+            </control>
+            <control type="button" id="40011">
+                <!-- Choose Stream_2 -->
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+                <visible>Control.IsEnabled(40011)</visible>
+            </control>
+            <control type="button" id="44001">
+                <!-- Remove Stream -->
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+                <visible>Control.IsEnabled(44001)</visible>
+            </control>
+            <control type="button" id="4502">
+                <description>Close PopupSetup</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="4503">
+                <description>channel up</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="4504">
+                <description>channel down</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="4505">
+                <description>program previous</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="4506">
+                <description>program next</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="4507">
+                <description>Navigate to now</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
+            <control type="button" id="44004">
+                <description>PopupSetup Quit</description>
+                <texturefocus></texturefocus>
+                <texturenofocus></texturenofocus>
+                <label></label>
+            </control>
         </control>
 
     </controls>
