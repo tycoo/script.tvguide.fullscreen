@@ -59,6 +59,7 @@ MODE_QUICK_EPG = 'QUICKEPG'
 MODE_TV = 'TV'
 MODE_OSD = 'OSD'
 MODE_LASTCHANNEL = 'LASTCHANNEL'
+MODE_MENUBAR = 'MENUBAR'
 MODE_POPUP_MENU = 'POPUP_MENU'
 MODE_POPUP_SETUP = 'POPUP_SETUP'
 
@@ -267,7 +268,7 @@ class TVGuide(xbmcgui.WindowXML):
     C_MAIN_OSD_CHANNEL_TITLE = 6005
     C_MAIN_OSD_CHANNEL_IMAGE = 6006
     C_MAIN_OSD_PROGRESS = 6011
-    C_MAIN_OSD_PLAY = 6012
+    C_MAIN_OSD_PLAY = 6012 # deprecated?
     C_MAIN_OSD_DURATION = 6013
     C_MAIN_OSD_PROGRESS_INFO = 6014
     C_NEXT_OSD_DESCRIPTION = 6007
@@ -597,7 +598,7 @@ class TVGuide(xbmcgui.WindowXML):
 
         self._hideControl(self.C_UP_NEXT)
 
-        if action.getId() in COMMAND_ACTIONS["CLOSE"] + COMMAND_ACTIONS["UP"] + COMMAND_ACTIONS["CATEGORIES"] and self.mode == None:
+        if action.getId() in COMMAND_ACTIONS["CLOSE"] + COMMAND_ACTIONS["UP"] + COMMAND_ACTIONS["CATEGORIES"] and self.mode == MODE_MENUBAR:
             self._hideControl(self.C_MAIN_MENUBAR)
             self.mode = MODE_EPG
             self.focusPoint.y = self.epgView.bottom
@@ -605,13 +606,13 @@ class TVGuide(xbmcgui.WindowXML):
             if control is not None:
                 self.setFocus(control)
             return
-        if action.getId() in COMMAND_ACTIONS["DOWN"] and self.mode == None:
+        if action.getId() in COMMAND_ACTIONS["DOWN"] and self.mode == MODE_MENUBAR:
             self._hideControl(self.C_MAIN_MENUBAR)
             self.focusPoint.y = self.epgView.top
             self.onRedrawEPG(self.channelIdx + CHANNELS_PER_PAGE, self.viewStartDate,
                              focusFunction=self._findControlBelow)
             return
-        if action.getId() in COMMAND_ACTIONS["MENU"] + [ACTION_MOUSE_WHEEL_UP, ACTION_MOUSE_WHEEL_DOWN] and self.mode == None:
+        if action.getId() in COMMAND_ACTIONS["MENU"] + [ACTION_MOUSE_WHEEL_UP, ACTION_MOUSE_WHEEL_DOWN] and self.mode == MODE_MENUBAR:
             self._hideControl(self.C_MAIN_MENUBAR)
             self.mode = MODE_EPG
         if action.getId() in COMMAND_ACTIONS["STOP"]:
@@ -687,7 +688,7 @@ class TVGuide(xbmcgui.WindowXML):
             if xbmc.getCondVisibility('Control.IsVisible(5201)'):
                 self._showControl(self.C_MAIN_MENUBAR)
                 self.setFocusId(self.C_MAIN_MOUSE_SEARCH)
-                self.mode = None
+                self.mode = MODE_MENUBAR
             else:
                 self._showCatMenu()
         elif action.getId() in COMMAND_ACTIONS["PROGRAM_SEARCH"]:
@@ -1389,13 +1390,16 @@ class TVGuide(xbmcgui.WindowXML):
             self.invisibleButtonsHelp_toggle()
             return
         elif controlId == self.C_MAIN_VIDEO_BUTTON_LAST_CHANNEL:
-            self.osdProgram = self.database.getCurrentProgram(self.lastChannel)
-            self._showContextMenu(self.osdProgram)
+            if ADDON.getSetting('last.channel.popup') == '0':
+                self._showLastPlayedChannel()
+            else:
+                self.osdProgram = self.database.getCurrentProgram(self.lastChannel)
+                self._showContextMenu(self.osdProgram)
             return
         elif controlId == self.C_MAIN_BUTTON_SHOW_MENUBAR:
             self._showControl(self.C_MAIN_MENUBAR)
             self.setFocusId(self.C_MAIN_MOUSE_SEARCH)
-            self.mode = None
+            self.mode = MODE_MENUBAR
             return
         elif controlId in [self.C_MAIN_BUTTON_CLOSE_MENUBAR, self.C_MAIN_BUTTON_CLOSE_MENUBAR_BIG]:
             self._hideControl(self.C_MAIN_MENUBAR)
@@ -1430,8 +1434,11 @@ class TVGuide(xbmcgui.WindowXML):
             self.onRedrawQuickEPG(self.quickChannelIdx + 3, self.quickViewStartDate, focusFunction=self._findQuickControlBelow)
             return
         elif controlId == self.C_MAIN_OSD_BUTTON_LAST_CHANNEL:
-            self.osdProgram = self.database.getCurrentProgram(self.lastChannel)
-            self._showContextMenu(self.osdProgram)
+            if ADDON.getSetting('last.channel.popup') == '0':
+                self._showLastPlayedChannel()
+            else:
+                self.osdProgram = self.database.getCurrentProgram(self.lastChannel)
+                self._showContextMenu(self.osdProgram)
             return
         elif controlId == self.C_MAIN_OSD_BUTTON_EPG_BACK:
             self._hideOsd()
@@ -1929,9 +1936,10 @@ class TVGuide(xbmcgui.WindowXML):
             self.playChannel(program.channel, program)
 
         elif buttonClicked == PopupMenu.C_POPUP_STOP:
-            self.player.stop()
-            self._hideOsd()
-            self.onRedrawEPG(self.channelIdx, self.viewStartDate)
+            if self.player.isPlaying():
+                self.player.stop()
+                self._hideOsd()
+                self.onRedrawEPG(self.channelIdx, self.viewStartDate)
 
         elif buttonClicked == PopupMenu.C_POPUP_CHANNELS:
             d = ChannelsMenu(self.database)
@@ -2580,7 +2588,7 @@ class TVGuide(xbmcgui.WindowXML):
                 return
             elif self.getControl(self.C_MAIN_MENUBAR) and ADDON.getSetting('action.bar') == 'true' and ADDON.getSetting('down.action') == 'true':
                 self._showControl(self.C_MAIN_MENUBAR)
-                self.mode = None
+                self.mode = MODE_MENUBAR
                 self.setFocusId(self.C_MAIN_MOUSE_SEARCH)
                 return
             self.focusPoint.y = self.epgView.top
@@ -4103,7 +4111,7 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
     C_POPUP_PROGRAM_DATE = 7003
     C_POPUP_PROGRAM_DATE_AND_ENDTIME = 77003
     C_POPUP_CATEGORY = 7004
-    C_POPUP_SET_CATEGORY = 7005
+    C_POPUP_SET_CATEGORY = 7005 # deprecated?
     C_POPUP_PLAY = 4000
     C_POPUP_STOP = 44000
     C_POPUP_CHOOSE_STREAM = 4001
@@ -4178,56 +4186,41 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
         self.buttonClicked = None
         self.category = category
         self.categories = categories
+        self.tvdb_urls = {}
+        self.loadTVDBImages()
+        self.player = xbmc.Player()
 
     def onInit(self):
-        labelControl = self.getControl(self.C_POPUP_LABEL)
-        if xbmc.getCondVisibility('Control.IsVisible(77000)'):
-            programdescriptionControl = self.getControl(self.C_POPUP_PROGRAM_DESCRIPTION_TEXTBOX)
-        programLabelControl = self.getControl(self.C_POPUP_PROGRAM_LABEL)
-        programDateControl = self.getControl(self.C_POPUP_PROGRAM_DATE)
-        if xbmc.getCondVisibility('Control.IsVisible(77003)'):
-            programDateandEndTimeControl = self.getControl(self.C_POPUP_PROGRAM_DATE_AND_ENDTIME)
-        programImageControl = self.getControl(self.C_POPUP_PROGRAM_IMAGE)
-        playControl = self.getControl(self.C_POPUP_PLAY)
-        if xbmc.getCondVisibility('Control.IsVisible(44000)'):
-            stopControl = self.getControl(self.C_POPUP_STOP)
-        remindControl = self.getControl(self.C_POPUP_REMIND)
-        autoplayControl = self.getControl(self.C_POPUP_AUTOPLAY)
-        autoplaywithControl = self.getControl(self.C_POPUP_AUTOPLAYWITH)
-        channelLogoControl = self.getControl(self.C_POPUP_CHANNEL_LOGO)
-        channelTitleControl = self.getControl(self.C_POPUP_CHANNEL_TITLE)
-        programTitleControl = self.getControl(self.C_POPUP_PROGRAM_TITLE)
-        programPlayBeginningControl = self.getControl(self.C_POPUP_PLAY_BEGINNING)
-        programSuperFavourites = self.getControl(self.C_POPUP_SEARCH)
-        if xbmc.getCondVisibility('Control.IsVisible(4103)'):
-            programDurationControl = self.getControl(self.C_POPUP_DURATION)
-        if xbmc.getCondVisibility('Control.IsVisible(4104)'):
-            programProgressInfoControl = self.getControl(self.C_POPUP_PROGRESS_INFO)
-        if xbmc.getCondVisibility('Control.IsEnabled(4105)'):
-            programProgressBarControl = self.getControl(self.C_POPUP_PROGRESS_BAR)
-        if xbmc.getCondVisibility('Control.IsVisible(4106)'):
-            nextprogramTitleControl = self.getControl(self.C_POPUP_NEXT_PROGRAM_TITLE)
-        if xbmc.getCondVisibility('Control.IsVisible(4107)'):
-            nextprogramDateControl = self.getControl(self.C_POPUP_NEXT_PROGRAM_DATE)
-        if xbmc.getCondVisibility('Control.IsVisible(44101)'):
-            setupChannelTitleControl = self.getControl(self.C_POPUP_SETUP_CHANNEL_TITLE)
 
         self.mode = MODE_POPUP_MENU
 
-        if xbmc.getCondVisibility('Control.IsVisible(44510)'):
+        self.has_Popup_Setup = self.getControl(self.C_POPUP_SETUP) != None
+        if not self.has_Popup_Setup:
+            self.setControlEnabled(self.C_POPUP_BUTTON_SHOW_SETUP,False)
+            self.setControlEnabled(self.C_POPUP_SETUP_BUTTON_CLOSE,False)
+
+        try:
             if ADDON.getSetting('help.invisiblebuttons') == 'true':
                 self.setControlVisible(self.C_POPUP_MOUSE_HELP_CONTROL,False)
             else:
                 self.setControlVisible(self.C_POPUP_MOUSE_HELP_CONTROL,True)
+        except:
+            pass
 
-        if self.program.channel:
-            channelTitleControl.setLabel(self.program.channel.title)
-            if xbmc.getCondVisibility('Control.IsVisible(44101)'):
-                setupChannelTitleControl.setLabel(self.program.channel.title)
-        if self.program.channel and self.program.channel.logo is not None:
-            channelLogoControl.setImage(self.program.channel.logo)
-        if self.program.title:
-            programTitleControl.setLabel('[B]%s[/B]' % self.program.title)
+        if self.program and self.program.channel is not None:
+            self.setControlLabel(self.C_POPUP_CHANNEL_TITLE, self.program.channel.title)
+            self.setControlLabel(self.C_POPUP_SETUP_CHANNEL_TITLE, self.program.channel.title)
+            if self.program.channel.logo is not None:
+                self.setControlImage(self.C_POPUP_CHANNEL_LOGO, self.program.channel.logo)
+            else:
+                self.setControlImage(self.C_POPUP_CHANNEL_LOGO, '')
+        else:
+            self.setControlLabel(self.C_POPUP_CHANNEL_TITLE, 'Channel Title')
+            self.setControlLabel(self.C_POPUP_SETUP_CHANNEL_TITLE, 'Setup Channel Title')
+            self.setControlImage(self.C_POPUP_CHANNEL_LOGO, '')
+
+        if self.program and self.program.title is not None:
+            self.setControlLabel(self.C_POPUP_PROGRAM_TITLE,'[B]%s[/B]' % self.program.title)
             label = ""
             try:
                 season = self.program.season
@@ -4236,52 +4229,53 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
                     label = "%s S%sE%s" % (self.program.title, season,episode)
                 else:
                     label = self.program.title
-                programLabelControl.setLabel(label)
+                self.setControlLabel(self.C_POPUP_PROGRAM_LABEL, label)
             except:
                 pass
-        if self.program.description:
-            labelControl.setLabel(self.program.description)
-        if self.program.description and xbmc.getCondVisibility('Control.IsVisible(77000)'):
-            programdescriptionControl.setText(self.program.description)
-        if self.program.imageSmall:
-            programImageControl.setImage(self.program.imageSmall)
-        if self.program.imageLarge:
-            programImageControl.setImage(self.program.imageLarge)
-        try:
-            if self.nextprogram.title and xbmc.getCondVisibility('Control.IsVisible(4106)'):
-                nextprogramTitleControl.setLabel(self.nextprogram.title)
-        except:
-            pass
 
-        start = self.program.startDate
-        end = self.program.endDate
-        nextstart = None
-        nextend = None
-        if self.nextprogram:
-            nextstart = self.nextprogram.startDate
-            nextend = self.nextprogram.endDate
+            program_image = ''
+            if ADDON.getSetting('program.image') == 'true':
+                if self.program.imageSmall:
+                    program_image = self.program.imageSmall
+                if self.program.imageLarge:
+                    program_image = self.program.imageLarge
+            if not program_image and ADDON.getSetting('find.program.images') == 'true':
+                if self.program.title in self.tvdb_urls:
+                    program_image = self.tvdb_urls[self.program.title]
+            # if not program_image and (ADDON.getSetting('program.channel.logo') == "true"):
+                # if self.program.channel.logo:
+                    # program_image = self.program.channel.logo
+            if not program_image:
+                program_image = "tvg-tv.png"
+            self.setControlImage(self.C_POPUP_PROGRAM_IMAGE, program_image)
+        else:
+            self.setControlLabel(self.C_POPUP_PROGRAM_TITLE, 'Program Title')
+            self.setControlLabel(self.C_POPUP_PROGRAM_LABEL, 'Program Label Title')
+            self.setControlImage(self.C_POPUP_PROGRAM_IMAGE, '')
 
-        if nextstart and xbmc.getCondVisibility('Control.IsVisible(4107)'):
-            day = self.formatDateTodayTomorrow(nextstart)
-            starttime = nextstart.strftime("%H:%M")
-            endtime = nextend.strftime("%H:%M")
-            nextprogramdate = "%s - %s" % (starttime,endtime)
-            nextprogramDateControl.setLabel('[B]%s[/B]' % nextprogramdate)
+        if self.program and self.program.description is not None:
+            self.setControlLabel(self.C_POPUP_LABEL, self.program.description)
+            self.setControlText(self.C_POPUP_PROGRAM_DESCRIPTION_TEXTBOX, self.program.description)
+        else:
+            self.setControlLabel(self.C_POPUP_LABEL, 'Program Description')
+            self.setControlText(self.C_POPUP_PROGRAM_DESCRIPTION_TEXTBOX, 'Program Description Textbox')
 
-        if start:
+        if self.program and self.program.startDate and self.program.endDate is not None:
+            start = self.program.startDate
+            end = self.program.endDate
             day = self.formatDateTodayTomorrow(start)
             starttime = start.strftime("%H:%M")
             endtime = end.strftime("%H:%M")
+
             programdate = "%s %s" % (day,starttime)
-            programDateControl.setLabel(programdate)
-            if xbmc.getCondVisibility('Control.IsVisible(77003)'):
-                programdateandendtime = "%s %s - %s" % (day,starttime,endtime)
-                programDateandEndTimeControl.setLabel('[B]%s[/B]' % programdateandendtime)
+            self.setControlLabel(self.C_POPUP_PROGRAM_DATE, programdate)
+
+            programdateandendtime = "%s %s - %s" % (day,starttime,endtime)
+            self.setControlLabel(self.C_POPUP_PROGRAM_DATE_AND_ENDTIME, '[B]%s[/B]' % programdateandendtime)
 
             duration = end - start
             duration_str = "Length: %s Minute(s)" % (duration.seconds / 60)
-            if xbmc.getCondVisibility('Control.IsVisible(4103)'):
-                programDurationControl.setLabel(duration_str)
+            self.setControlLabel(self.C_POPUP_DURATION, duration_str)
 
             now = datetime.datetime.now()
             if now > start:
@@ -4293,47 +4287,79 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
             days = when.days
             hours, remainder = divmod(when.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
-            if xbmc.getCondVisibility('Control.IsVisible(4104)'):
-                if days >= 1:
-                    when_str = "In %d days %s hour(s) %s min(s)" % (days,hours,minutes + 1)
-                    programProgressInfoControl.setLabel(when_str)
-                elif days > 0:
-                    when_str = "In %d day %s hour(s) %s min(s)" % (days,hours,minutes + 1)
-                    programProgressInfoControl.setLabel(when_str)
-                elif hours >= 1:
-                    when_str = "In %d hour(s) %d minute(s)" % (hours,minutes + 1)
-                    programProgressInfoControl.setLabel(when_str)
-                elif seconds > 0:
-                    when_str = "In %d minute(s)" % (when.seconds / 60 + 1)
-                    programProgressInfoControl.setLabel(when_str)
-                elif end - elapsed > start:
-                    remaining = end - now
-                    remaining_str =  "%s minute(s) left" % (remaining.seconds / 60 + 1)
-                    programProgressInfoControl.setLabel(remaining_str)
-                else:
-                    programProgressInfoControl.setLabel("Ended")
+            if days >= 1:
+                when_str = "In %d days %s hour(s) %s min(s)" % (days,hours,minutes + 1)
+                self.setControlLabel(self.C_POPUP_PROGRESS_INFO, when_str)
+            elif days > 0:
+                when_str = "In %d day %s hour(s) %s min(s)" % (days,hours,minutes + 1)
+                self.setControlLabel(self.C_POPUP_PROGRESS_INFO, when_str)
+            elif hours >= 1:
+                when_str = "In %d hour(s) %d minute(s)" % (hours,minutes + 1)
+                self.setControlLabel(self.C_POPUP_PROGRESS_INFO, when_str)
+            elif seconds > 0:
+                when_str = "In %d minute(s)" % (when.seconds / 60 + 1)
+                self.setControlLabel(self.C_POPUP_PROGRESS_INFO, when_str)
+            elif end - elapsed > start:
+                remaining = end - now
+                remaining_str =  "%s minute(s) left" % (remaining.seconds / 60 + 1)
+                self.setControlLabel(self.C_POPUP_PROGRESS_INFO, remaining_str)
+            else:
+                self.setControlLabel(self.C_POPUP_PROGRESS_INFO, "Ended")
 
-            progress = (100.0 * float(elapsed.seconds)) / float(duration.seconds+0.001)
-            progress = int(round(progress))
-            if xbmc.getCondVisibility('Control.IsEnabled(4105)'):
-                programProgressBarControl.setPercent(progress)
+            try:
+                programProgressBarControl = self.getControl(self.C_POPUP_PROGRESS_BAR)
+                if programProgressBarControl:
+                    progress = (100.0 * float(elapsed.seconds)) / float(duration.seconds+0.001)
+                    progress = int(round(progress))
+                    programProgressBarControl.setPercent(progress)
+            except:
+                pass
+        else:
+            self.setControlLabel(self.C_POPUP_PROGRAM_DATE, 'Program Date')
+            self.setControlLabel(self.C_POPUP_PROGRAM_DATE_AND_ENDTIME, 'Program Date-End')
+            self.setControlLabel(self.C_POPUP_DURATION, 'Program Duration')
+            self.setControlLabel(self.C_POPUP_PROGRESS_INFO, 'Program Progress Info')
+            try:
+                self.getControl(self.C_POPUP_PROGRESS_BAR).setPercent(0)
+            except:
+                pass
 
-        if self.program.startDate:
-            remindControl.setEnabled(True)
-            autoplayControl.setEnabled(True)
-            autoplaywithControl.setEnabled(True)
+        if self.program and self.program.title and self.program.startDate is not None:
+            self.setControlEnabled(self.C_POPUP_SEARCH,True)
+            self.setControlEnabled(self.C_POPUP_PLAY_BEGINNING,True)
+            self.setControlEnabled(self.C_POPUP_EXTENDED,True)
             if self.showRemind:
-                remindControl.setLabel("Remind")
+                self.setControlLabel(self.C_POPUP_REMIND, "Remind")
             else:
-                remindControl.setLabel("Don't Remind")
+                self.setControlLabel(self.C_POPUP_REMIND, "Don't Remind")
             if self.showAutoplay:
-                autoplayControl.setLabel("AutoPlay")
+                self.setControlLabel(self.C_POPUP_AUTOPLAY, "AutoPlay")
             else:
-                autoplayControl.setLabel("Don't AutoPlay")
+                self.setControlLabel(self.C_POPUP_AUTOPLAY, "Don't AutoPlay")
             if self.showAutoplaywith:
-                autoplaywithControl.setLabel("AutoPlayWith")
+                self.setControlLabel(self.C_POPUP_AUTOPLAYWITH, "AutoPlayWith")
             else:
-                autoplaywithControl.setLabel("Don't AutoPlayWith")
+                self.setControlLabel(self.C_POPUP_AUTOPLAYWITH, "Don't AutoPlayWith")
+        else:
+            self.setControlEnabled(self.C_POPUP_REMIND,False)
+            self.setControlEnabled(self.C_POPUP_AUTOPLAY,False)
+            self.setControlEnabled(self.C_POPUP_AUTOPLAYWITH,False)
+            self.setControlEnabled(self.C_POPUP_SEARCH,False)
+            self.setControlEnabled(self.C_POPUP_PLAY_BEGINNING,False)
+            self.setControlEnabled(self.C_POPUP_EXTENDED,False)
+
+        if self.nextprogram and self.nextprogram.startDate and self.nextprogram.endDate is not None:
+            self.setControlLabel(self.C_POPUP_NEXT_PROGRAM_TITLE, self.nextprogram.title)
+            nextstart = self.nextprogram.startDate
+            nextend = self.nextprogram.endDate
+            day = self.formatDateTodayTomorrow(nextstart)
+            starttime = nextstart.strftime("%H:%M")
+            endtime = nextend.strftime("%H:%M")
+            nextprogramdate = "%s - %s" % (starttime,endtime)
+            self.setControlLabel(self.C_POPUP_NEXT_PROGRAM_DATE, '[B]%s[/B]' % nextprogramdate)
+        else:
+            self.setControlLabel(self.C_POPUP_NEXT_PROGRAM_TITLE, 'Next Program Title')
+            self.setControlLabel(self.C_POPUP_NEXT_PROGRAM_DATE, 'Next Program Date')
 
         items = list()
         order = ADDON.getSetting("cat.order").split('|')
@@ -4343,73 +4369,44 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
 
             items.append(item)
         listControl = self.getControl(self.C_POPUP_CATEGORY)
+        listControl.reset()
         listControl.addItems(items)
         if self.category and self.category in categories:
             index = categories.index(self.category)
             if index >= 0:
                 listControl.selectItem(index)
 
+        if self.program and self.database.getCustomStreamUrl(self.program.channel) is not None:
+            # self.setControlLabel(self.C_POPUP_PLAY, strings(WATCH_CHANNEL, self.program.channel.title))
+            self.setControlLabel(self.C_POPUP_PLAY, "Watch Channel")
+        else:
+            self.setControlLabel(self.C_POPUP_PLAY, "Not Playable")
+            # self.setControlEnabled(self.C_POPUP_PLAY,False)
+
+        if self.player.isPlaying():
+            self.setControlLabel(self.C_POPUP_STOP, "Stop Channel")
+        else:
+            self.setControlEnabled(self.C_POPUP_STOP,False)
+
         if xbmc.getCondVisibility('[Control.IsVisible(40011)|Control.IsVisible(44001)]'):
-            if self.database.getCustomStreamUrl(self.program.channel)is None:
-                #playControl.setEnabled(False)
-                self.getControl(self.C_POPUP_REMOVE_STREAM).setEnabled(False)
-                self.getControl(self.C_POPUP_CHOOSE_STREAM_2).setEnabled(True)
-                chooseStrmControl = self.getControl(self.C_POPUP_CHOOSE_STREAM_2)
-                chooseStrmControl.setLabel(strings(CHOOSE_STRM_FILE))
-                self._showPopupSetup()
-                playControl.setLabel("Not playable")
-            else:
-                #playControl.setLabel(strings(WATCH_CHANNEL, self.program.channel.title))
-                self.getControl(self.C_POPUP_CHOOSE_STREAM_2).setEnabled(False)
-                self.getControl(self.C_POPUP_REMOVE_STREAM).setEnabled(True)
-                chooseStrmControl = self.getControl(self.C_POPUP_REMOVE_STREAM)
-                chooseStrmControl.setLabel(strings(REMOVE_STRM_FILE))
-                playControl.setLabel("Watch Channel")
-            if xbmc.getCondVisibility('!Control.IsVisible(4500)'):
-                self._showPopupSetup()
+            if self.program and self.database.getCustomStreamUrl(self.program.channel) is None:
+                self.setControlEnabled(self.C_POPUP_REMOVE_STREAM,False)
+                self.setControlLabel(self.C_POPUP_CHOOSE_STREAM_2, strings(CHOOSE_STRM_FILE))
+                if self.has_Popup_Setup:
+                    self._showPopupSetup()
+            elif self.program and self.database.getCustomStreamUrl(self.program.channel) is not None:
+                self.setControlEnabled(self.C_POPUP_CHOOSE_STREAM_2,False)
+                self.setControlLabel(self.C_POPUP_REMOVE_STREAM, strings(REMOVE_STRM_FILE))
+                if self.has_Popup_Setup and xbmc.getCondVisibility('!Control.IsVisible(4500)'):
+                    self._showPopupSetup()
 
         if xbmc.getCondVisibility('Control.IsVisible(4001)'):
-            #playControl.setLabel(strings(WATCH_CHANNEL, self.program.channel.title))
-            playControl.setLabel("Watch Channel")
-            if self.program.channel and not self.program.channel.isPlayable():
-                #playControl.setEnabled(False)
+            if self.program and self.program.channel and not self.program.channel.isPlayable():
                 self.setFocusId(self.C_POPUP_CHOOSE_STREAM)
-                if self.database.getCustomStreamUrl(self.program.channel):
-                    chooseStrmControl = self.getControl(self.C_POPUP_CHOOSE_STREAM)
-                    chooseStrmControl.setLabel(strings(REMOVE_STRM_FILE))
+            if self.program and self.database.getCustomStreamUrl(self.program.channel) is not None:
+                self.setControlLabel(self.C_POPUP_CHOOSE_STREAM, strings(REMOVE_STRM_FILE))
 
-        if not self.program.title:
-            labelControl.setEnabled(False)
-            programdescriptionControl.setEnabled(False)
-            programLabelControl.setEnabled(False)
-            programDateControl.setEnabled(False)
-            programDateandEndTimeControl.setEnabled(False)
-            programImageControl.setEnabled(False)
-            remindControl.setEnabled(False)
-            autoplayControl.setEnabled(False)
-            autoplaywithControl.setEnabled(False)
-            channelLogoControl.setEnabled(False)
-            channelTitleControl.setEnabled(False)
-            programTitleControl.setEnabled(False)
-            programPlayBeginningControl.setEnabled(False)
-            programSuperFavourites.setEnabled(False)
-            self.getControl(self.C_POPUP_EXTENDED).setEnabled(False)
-            programDurationControl.setEnabled(False)
-            programProgressInfoControl.setEnabled(False)
-            programProgressBarControl.setEnabled(False)
-            nextprogramTitleControl.setEnabled(False)
-            nextprogramDateControl.setEnabled(False)
-            setupChannelTitleControl.setEnabled(False)
-        if not self.program.channel:
-            playControl.setEnabled(False)
-            stopControl.setEnabled(False)
-            self.getControl(self.C_POPUP_CHOOSE_STREAM).setEnabled(False)
-            self.getControl(self.C_POPUP_CHOOSE_STREAM_2).setEnabled(False)
-            self.getControl(self.C_POPUP_REMOVE_STREAM).setEnabled(False)
-            self.getControl(self.C_POPUP_STREAM_SETUP).setEnabled(False)
-            self.getControl(self.C_POPUP_CHOOSE_ALT).setEnabled(False)
-
-        if self.program.channel and ADDON.getSetting('menu.addon') == "true":
+        if self.program and self.program.channel and ADDON.getSetting('menu.addon') == "true":
             url = self.database.getStreamUrl(self.program.channel)
             if url:
                 if url.startswith('plugin://'):
@@ -4442,9 +4439,9 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
         self.mode = MODE_POPUP_SETUP
         self._showControl(self.C_POPUP_SETUP)
 
-        if self.database.getCustomStreamUrl(self.program.channel)is None:
+        if self.program and self.database.getCustomStreamUrl(self.program.channel) is None:
             self.setFocusId(self.C_POPUP_CHOOSE_STREAM_2)
-        else:
+        elif self.program and self.database.getCustomStreamUrl(self.program.channel) is not None:
             self.setFocusId(self.C_POPUP_REMOVE_STREAM)
 
     def formatDateTodayTomorrow(self, timestamp):
@@ -4462,21 +4459,21 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
                 return timestamp.strftime("%A")
 
     def onAction(self, action):
-        if action.getId() == ACTION_MOUSE_MOVE and xbmc.getCondVisibility('Control.IsVisible(44500)'):
+        if action.getId() == ACTION_MOUSE_MOVE:
             if ADDON.getSetting('mouse.controls') == "true":
                 self._showControl(self.C_POPUP_MENU_MOUSE_CONTROLS)
 
         elif action.getId() in [ACTION_MOUSE_WHEEL_UP, ACTION_UP] and xbmc.getCondVisibility('!Control.IsVisible(7004)'):
-            self.currentChannel = self.database.getPreviousChannel(self.currentChannel)
+            if self.database.getPreviousChannel(self.currentChannel) is not None:
+                self.currentChannel = self.database.getPreviousChannel(self.currentChannel)
             self.program = self.database.getCurrentProgram(self.currentChannel)
             self.nextprogram = self.database.getNextProgram(self.program)
-            self.program.imageSmall = "tvg-tv.png" # TODO: get tvdb images
             self.show()
         elif action.getId() in [ACTION_MOUSE_WHEEL_DOWN, ACTION_DOWN] and xbmc.getCondVisibility('!Control.IsVisible(7004)'):
-            self.currentChannel = self.database.getNextChannel(self.currentChannel)
+            if self.database.getNextChannel(self.currentChannel) is not None:
+                self.currentChannel = self.database.getNextChannel(self.currentChannel)
             self.program = self.database.getCurrentProgram(self.currentChannel)
             self.nextprogram = self.database.getNextProgram(self.program)
-            self.program.imageSmall = "tvg-tv.png" # TODO: get tvdb images
             self.show()
         elif action.getId() in [ACTION_PARENT_DIR, ACTION_PREVIOUS_MENU, KEY_NAV_BACK]:
             if self.mode == MODE_POPUP_SETUP:
@@ -4487,10 +4484,10 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
                 self.close()
         elif action.getId() in [ACTION_STOP]:
             self.close()
-        elif action.getId() in [KEY_CONTEXT_MENU] and xbmc.getCondVisibility('Control.IsVisible(4500)'):
+        elif action.getId() in [KEY_CONTEXT_MENU] and self.has_Popup_Setup and xbmc.getCondVisibility('!Control.IsVisible(7004)'):
             self._showPopupSetup()
 
-        elif action.getId() in [KEY_CONTEXT_MENU] and xbmc.getCondVisibility('Control.IsVisible(7004)'):
+        elif action.getId() in [KEY_CONTEXT_MENU]:
 
             cList = self.getControl(self.C_POPUP_CATEGORY)
             item = cList.getSelectedItem()
@@ -4567,47 +4564,42 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
             self.setFocusId(self.C_POPUP_PLAY)
             self.mode = MODE_POPUP_MENU
         elif controlId in [self.C_POPUP_CHANNEL_UP_BIG, self.C_POPUP_SETUP_BUTTON_CHANNEL_UP]:
-            self.currentChannel = self.database.getPreviousChannel(self.currentChannel)
+            if self.database.getPreviousChannel(self.currentChannel) is not None:
+                self.currentChannel = self.database.getPreviousChannel(self.currentChannel)
             self.program = self.database.getCurrentProgram(self.currentChannel)
             self.nextprogram = self.database.getNextProgram(self.program)
-            self.program.imageSmall = "tvg-tv.png" # TODO: get tvdb images
             self.show()
         elif controlId in [self.C_POPUP_CHANNEL_DOWN_BIG, self.C_POPUP_SETUP_BUTTON_CHANNEL_DOWN]:
-            self.currentChannel = self.database.getNextChannel(self.currentChannel)
+            if self.database.getNextChannel(self.currentChannel) is not None:
+                self.currentChannel = self.database.getNextChannel(self.currentChannel)
             self.program = self.database.getCurrentProgram(self.currentChannel)
             self.nextprogram = self.database.getNextProgram(self.program)
-            self.program.imageSmall = "tvg-tv.png" # TODO: get tvdb images
             self.show()
         elif controlId in [self.C_POPUP_PROGRAM_PREVIOUS_BIG, self.C_POPUP_SETUP_BUTTON_PROGRAM_PREVIOUS]:
-            self.program = self.database.getPreviousProgram(self.program)
+            if self.database.getPreviousProgram(self.program) is not None:
+                self.program = self.database.getPreviousProgram(self.program)
             self.nextprogram = self.database.getNextProgram(self.program)
-            self.program.imageSmall = "tvg-tv.png" # TODO: get tvdb images
             self.show()
         elif controlId in [self.C_POPUP_PROGRAM_NEXT_BIG, self.C_POPUP_SETUP_BUTTON_PROGRAM_NEXT]:
-            self.program = self.database.getNextProgram(self.program)
+            if self.database.getNextProgram(self.program) is not None:
+                self.program = self.database.getNextProgram(self.program)
             self.nextprogram = self.database.getNextProgram(self.program)
-            self.program.imageSmall = "tvg-tv.png" # TODO: get tvdb images
             self.show()
         elif controlId in [self.C_POPUP_PROGRAM_NOW_BIG, self.C_POPUP_SETUP_BUTTON_PROGRAM_NOW]:
             self.program = self.database.getCurrentProgram(self.currentChannel)
             self.nextprogram = self.database.getNextProgram(self.program)
             self.show()
+        elif controlId == self.C_POPUP_REMOVE_STREAM and self.database.getCustomStreamUrl(self.program.channel):
+            self.database.deleteCustomStreamUrl(self.program.channel)
+            self.show()
         elif controlId == self.C_POPUP_CHOOSE_STREAM and self.database.getCustomStreamUrl(self.program.channel):
             self.database.deleteCustomStreamUrl(self.program.channel)
-            chooseStrmControl = self.getControl(self.C_POPUP_CHOOSE_STREAM)
-            chooseStrmControl.setLabel(strings(CHOOSE_STRM_FILE))
-        elif controlId == self.C_POPUP_REMOVE_STREAM:
-            self.database.deleteCustomStreamUrl(self.program.channel)
-            chooseStrmControl = self.getControl(self.C_POPUP_CHOOSE_STREAM_2)
-            chooseStrmControl.setLabel(strings(CHOOSE_STRM_FILE))
-            self.getControl(self.C_POPUP_REMOVE_STREAM).setEnabled(False)
-            self.getControl(self.C_POPUP_CHOOSE_STREAM_2).setEnabled(True)
-            self._showPopupSetup()
-            self.setFocusId(self.C_POPUP_CHOOSE_STREAM_2)
+            self.setControlLabel(self.C_POPUP_CHOOSE_STREAM, strings(CHOOSE_STRM_FILE))
 
             if not self.program.channel.isPlayable():
-                playControl = self.getControl(self.C_POPUP_PLAY)
-                #playControl.setEnabled(False)
+                #playControl = self.setControlEnabled(self.C_POPUP_PLAY, False)
+                return
+
         elif controlId == self.C_POPUP_CATEGORY:
             cList = self.getControl(self.C_POPUP_CATEGORY)
             item = cList.getSelectedItem()
@@ -4637,6 +4629,50 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
     def _hidePopupSetup(self):
         self._hideControl(self.C_POPUP_SETUP)
 
+    def getControl(self, controlId):
+        if not controlId:
+            return None
+        try:
+            return super(PopupMenu, self).getControl(controlId)
+        except Exception as detail:
+            #if not self.isClosing:
+            #    self.close()
+            return None
+
+    def setControlEnabled(self, controlId, enable):
+            if not controlId:
+                return
+            control = self.getControl(controlId)
+            if control:
+                control.setEnabled(enable)
+
+    def setControlLabel(self, controlId, label):
+        control = self.getControl(controlId)
+        if control and label:
+            control.setEnabled(True)
+            control.setLabel(label)
+        # elif control:
+            # label = ''
+            # control.setLabel(label)
+
+    def setControlText(self, controlId, text):
+        control = self.getControl(controlId)
+        if control and text:
+            control.setEnabled(True)
+            control.setText(text)
+        # elif control:
+            # text = ''
+            # control.setText(text)
+
+    def setControlImage(self, controlId, image):
+        control = self.getControl(controlId)
+        if control and image:
+            control.setEnabled(True)
+            control.setImage(image.encode('utf-8'))
+        elif control:
+            image = ''
+            control.setImage(image.encode('utf-8'))
+
     def setControlVisible(self, controlId, visible):
         if not controlId:
             return
@@ -4657,6 +4693,26 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
         """
         for controlId in controlIds:
             self.setControlVisible(controlId,False)
+
+    def loadTVDBImages(self):
+        file_name = 'special://profile/addon_data/script.tvguide.fullscreen/tvdb.pickle'
+        if xbmcvfs.exists(file_name):
+            f = open(xbmc.translatePath(file_name),'rb')
+            if f:
+                try:
+                    self.tvdb_urls = pickle.load(f)
+                    if len(self.tvdb_urls) > 1000:
+                        k = self.tvdb_urls.keys()
+                        k.reverse()
+                        while len(self.tvdb_urls) > 1000:
+                            self.tvdb_urls.pop(k.pop(),None)
+                except: pass
+
+    def setFocusId(self, controlId):
+        control = self.getControl(controlId)
+        if control:
+            control.setEnabled(True)
+            self.setFocus(control)
 
     def onFocus(self, controlId):
         pass
